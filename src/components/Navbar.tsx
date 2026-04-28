@@ -24,7 +24,11 @@ const Navbar = () => {
           <div className="flex items-center space-x-4">
             {user && status === "authenticated" ? (
               <>
-                <Button variant="ghost" size="sm">
+                <Button
+                  onClick={() => router.push("/leaderboard")}
+                  variant="ghost"
+                  size="sm"
+                >
                   Leaderboard
                 </Button>
                 <MenuDropdown user={user} />

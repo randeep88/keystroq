@@ -3,29 +3,262 @@
 import { useEffect, useRef, useState } from "react";
 import useSockets from "../hooks/useSockets";
 import { useUser } from "../context/userContext";
+import { Surface } from "@heroui/react";
+
+const words = [
+  "time",
+  "day",
+  "night",
+  "morning",
+  "evening",
+  "world",
+  "people",
+  "family",
+  "friend",
+  "home",
+  "house",
+  "room",
+  "door",
+  "window",
+  "table",
+  "chair",
+  "water",
+  "food",
+  "bread",
+  "milk",
+  "tea",
+  "coffee",
+  "sugar",
+  "salt",
+  "rice",
+  "fruit",
+  "apple",
+  "banana",
+  "mango",
+  "orange",
+  "flower",
+  "tree",
+  "plant",
+  "garden",
+  "grass",
+  "river",
+  "mountain",
+  "cloud",
+  "rain",
+  "storm",
+  "summer",
+  "winter",
+  "spring",
+  "school",
+  "college",
+  "teacher",
+  "student",
+  "book",
+  "paper",
+  "pen",
+  "pencil",
+  "lesson",
+  "class",
+  "exam",
+  "answer",
+  "question",
+  "number",
+  "money",
+  "market",
+  "shop",
+  "store",
+  "road",
+  "street",
+  "car",
+  "bus",
+  "train",
+  "bike",
+  "cycle",
+  "travel",
+  "ticket",
+  "station",
+  "office",
+  "worker",
+  "doctor",
+  "nurse",
+  "hospital",
+  "health",
+  "happy",
+  "smile",
+  "laugh",
+  "cry",
+  "dream",
+  "hope",
+  "love",
+  "care",
+  "help",
+  "support",
+  "truth",
+  "peace",
+  "light",
+  "sound",
+  "music",
+  "dance",
+  "movie",
+  "picture",
+  "camera",
+  "phone",
+  "mobile",
+  "laptop",
+  "screen",
+  "battery",
+  "clock",
+  "watch",
+  "shirt",
+  "shoes",
+  "dress",
+  "bag",
+  "wallet",
+  "mother",
+  "father",
+  "brother",
+  "sister",
+  "child",
+  "baby",
+  "uncle",
+  "aunt",
+  "grand",
+  "village",
+  "city",
+  "country",
+  "nation",
+  "future",
+  "past",
+  "present",
+  "dream",
+  "goal",
+  "work",
+  "job",
+  "career",
+  "success",
+  "failure",
+  "effort",
+  "practice",
+  "habit",
+  "choice",
+  "change",
+  "chance",
+  "moment",
+  "memory",
+  "story",
+  "voice",
+  "heart",
+  "mind",
+  "power",
+  "energy",
+  "strong",
+  "simple",
+  "better",
+  "honest",
+  "clean",
+  "fresh",
+  "sweet",
+  "cold",
+  "warm",
+  "fast",
+  "slow",
+  "early",
+  "late",
+  "young",
+  "older",
+  "small",
+  "large",
+  "short",
+  "tall",
+  "black",
+  "white",
+  "green",
+  "yellow",
+  "orange",
+  "purple",
+  "silver",
+  "gold",
+  "today",
+  "tomorrow",
+  "yesterday",
+];
 
 const TypingArea = ({
+  setPassage,
+  backspaceData,
+  isBackspaceDisabled,
+  passageData,
+  isHost,
+  wordCount,
   warData,
   setIsTimeStarted,
   isTimeStarted,
+  setIsBackspaceDisable,
 }: {
+  backspaceData: any;
+  setIsBackspaceDisable: (data: any) => void;
+  isBackspaceDisabled: boolean;
+  passageData: any;
+  isHost: boolean;
+  wordCount: number;
   warData: any;
   setIsTimeStarted: any;
   isTimeStarted: boolean;
+  setPassage: (data: any) => void;
 }) => {
   const [typed, setTyped] = useState("");
   const [startTime, setStartTime] = useState<number | null>(null);
   const [wpm, setWpm] = useState(0);
   const [error, setError] = useState(0);
   const [accuracy, setAccuracy] = useState(100);
+  const [passage, setPassageState] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  console.log("error", error);
+  const [finishedAt, setFinishedAt] = useState<any>(null);
+
+  const warDataPassage = warData?.arena?.passage || "";
+  const roomId = warData?.arena?.roomId || passageData?.roomId;
+
+  const generatePassage = (count: number) => {
+    let result = [];
+
+    for (let i = 0; i < count; i++) {
+      const randomWord = words[Math.floor(Math.random() * words.length)];
+      result.push(randomWord.toLowerCase());
+    }
+
+    return result.join(" ");
+  };
+
+  useEffect(() => {
+    if (!roomId) return;
+
+    if (isHost) {
+      const newPassage = generatePassage(wordCount);
+      setPassage({
+        roomId,
+        passage: newPassage,
+        isBackspaceDisabled,
+        wordCount,
+      });
+      setPassageState(newPassage);
+    }
+    setTyped("");
+    setStartTime(null);
+    setWpm(0);
+    setError(0);
+    setAccuracy(100);
+    setFinishedAt(null);
+  }, [wordCount, roomId]);
+
+  useEffect(() => {
+    if (isHost) return;
+    if (!passageData?.passage) return;
+
+    setPassageState(passageData?.passage);
+  }, [passageData?.passage, passageData?.isBackspaceDisabled]);
 
   const { dbUser: user } = useUser();
-  const { sendLiveData } = useSockets(user?.id);
-
-  const passage = warData?.arena?.passage || "";
-  const roomId = warData?.arena?.roomId || "";
+  const { sendLiveData, finishWar } = useSockets(user?.id);
 
   useEffect(() => {
     if (sendLiveData && user?.id && roomId) {
@@ -37,12 +270,18 @@ const TypingArea = ({
         accuracy,
         startTime,
         roomId,
+        finishedAt,
         progress: Math.round((typed.length / passage.length) * 100),
       });
     }
-  }, [typed, wpm, accuracy, startTime, user?.id, roomId]);
+  }, [typed, wpm, accuracy, startTime, user?.id, roomId, finishedAt]);
 
-  // focus input on mount
+  useEffect(() => {
+    if (typed.length === passage?.length && passage?.length > 0) {
+      setFinishedAt(Date.now());
+    }
+  }, [typed, passage]);
+
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
@@ -50,12 +289,23 @@ const TypingArea = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
-    // pehla keypress pe timer start karo
     if (!startTime && value.length === 1) {
       setStartTime(Date.now());
       if (!isTimeStarted) {
         setIsTimeStarted(true);
       }
+    }
+
+    if (value.length === passage.length) {
+      finishWar({
+        userId: user?.id,
+        roomId,
+        wpm,
+        accuracy,
+        error,
+        progress: 100,
+        finishedAt: Date.now(),
+      });
     }
 
     setTyped(value);
@@ -86,25 +336,38 @@ const TypingArea = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // tab press se focus na jaye
     if (e.key === "Tab") e.preventDefault();
-    if (e.key === "Backspace") e.preventDefault();
+    
+    if (backspaceData?.isBackspaceDisabled && e.key === "Backspace")
+      e.preventDefault();
   };
 
+  if (!warDataPassage) {
+    return (
+      <div className="text-center py-10 text-muted">
+        Choose desired word count for passage
+      </div>
+    );
+  }
+
   return (
-    <div onClick={() => inputRef.current?.focus()}>
+    <Surface
+      variant="secondary"
+      onClick={() => inputRef.current?.focus()}
+      className="p-5 rounded-3xl"
+    >
       <input
         ref={inputRef}
         value={typed}
         onChange={handleChange}
         className="opacity-0 absolute"
         onKeyDown={handleKeyDown}
-        maxLength={passage.length}
+        maxLength={passage?.length}
       />
 
       {/* render passage */}
       <div className="text-2xl font-mono cursor-text">
-        {passage.split("").map((char: any, i: number) => {
+        {passage?.split("").map((char: any, i: number) => {
           let color = "text-muted";
 
           if (i < typed.length) {
@@ -115,14 +378,14 @@ const TypingArea = ({
             <span key={i} className={`relative ${color}`}>
               {/* cursor */}
               {i === typed.length && (
-                <span className="absolute -left-0.5 top-0 h-full w-0.5 bg-purple-500 animate-pulse" />
+                <span className="absolute -left-0.5 top-0 h-full w-0.5 bg-accent animate-caret-blink" />
               )}
               {char}
             </span>
           );
         })}
       </div>
-    </div>
+    </Surface>
   );
 };
 

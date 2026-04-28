@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
@@ -14,6 +13,8 @@ const useSockets = (userId: string) => {
   const [warNotification, setWarNotification] = useState<any>(null);
   const [warData, setWarData] = useState<any>(null);
   const [liveWarData, setLiveWarData] = useState<any>(null);
+  const [passageData, setPassageData] = useState<any>(null);
+  const [backspaceData, setBackspaceData] = useState<any>(null);
 
   useEffect(() => {
     socketRef.current = io(SERVER_URL, {
@@ -38,11 +39,18 @@ const useSockets = (userId: string) => {
 
     socketRef.current.on("receive:war-data", (data: any) => {
       setWarData(data);
-      console.log("wardata: ", data);
     });
 
     socketRef.current.on("receive:live-war-data", (data: any) => {
       setLiveWarData(data);
+    });
+
+    socketRef.current.on("passage:set", (data: any) => {
+      setPassageData(data);
+    });
+
+    socketRef.current.on("backspace:set", (data: any) => {
+      setBackspaceData(data);
     });
 
     return () => {
@@ -67,8 +75,8 @@ const useSockets = (userId: string) => {
     socketRef.current?.emit("war:start", data);
   };
 
-  const finishWar = (callback: (data: any) => void) => {
-    socketRef.current?.emit("war:finish", callback);
+  const finishWar = (data: any) => {
+    socketRef.current?.emit("war:finish", data);
   };
 
   const getWarData = (roomId: string) => {
@@ -77,6 +85,14 @@ const useSockets = (userId: string) => {
 
   const sendLiveData = (data: any) => {
     socketRef.current?.emit("live-war-data", data);
+  };
+
+  const setPassage = (data: any) => {
+    socketRef.current?.emit("set-passage", data);
+  };
+
+  const setBackspace = (data: any) => {
+    socketRef.current?.emit("set-backspace", data);
   };
 
   return {
@@ -93,6 +109,10 @@ const useSockets = (userId: string) => {
     warNotification,
     warData,
     liveWarData,
+    setPassage,
+    setBackspace,
+    backspaceData,
+    passageData,
   };
 };
 

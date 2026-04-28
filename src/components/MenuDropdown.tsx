@@ -11,7 +11,7 @@ const MenuDropdown = ({ user }: { user: any }) => {
         <Avatar size="sm">
           <Avatar.Image alt={user.name} src={user?.image} />
           <Avatar.Fallback delayMs={600}>
-            {user.name?.charAt(0)}
+            {user.name?.charAt(0).toUpperCase()}
           </Avatar.Fallback>
         </Avatar>
       </Dropdown.Trigger>
@@ -21,7 +21,7 @@ const MenuDropdown = ({ user }: { user: any }) => {
             <Avatar size="sm">
               <Avatar.Image alt={user.name} src={user?.image} />
               <Avatar.Fallback delayMs={600}>
-                {user.name?.charAt(0)}
+                {user.name?.charAt(0).toUpperCase()}
               </Avatar.Fallback>
             </Avatar>
             <div className="flex flex-col gap-0">

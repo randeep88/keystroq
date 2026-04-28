@@ -1,5 +1,4 @@
-"use client"
-
+"use client";
 
 import { useSession } from "next-auth/react";
 import { createContext, useContext } from "react";
@@ -24,10 +23,6 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const { userByEmail, isLoadingUserByEmail } = useDbUser({
     email: user?.email!,
   });
-
-  if (status === "loading" && isLoadingUserByEmail) {
-    return <p>Loading...</p>;
-  }
 
   return (
     <userContext.Provider

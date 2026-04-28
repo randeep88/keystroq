@@ -2,6 +2,7 @@
 
 import {
   Button,
+  FieldError,
   Form,
   Input,
   Modal,
@@ -18,7 +19,7 @@ const JoinArenaModal = ({
 
   return (
     <Modal>
-      <Button variant="secondary" className="w-full" size="lg">
+      <Button variant="tertiary" className="w-full" size="lg">
         Join Arena
       </Button>
       <Modal.Backdrop>
@@ -48,6 +49,7 @@ const JoinArenaModal = ({
                     value={arenaId}
                     onChange={(e) => setArenaId(e.target.value)}
                   />
+                  <FieldError>Arena ID is required</FieldError>
                 </TextField>
                 <Button type="submit" className="w-full mt-5">
                   Continue

@@ -1,11 +1,14 @@
-"use client"
+"use client";
 
 import { Button, Card, Chip, Separator } from "@heroui/react";
 import Navbar from "../components/Navbar";
 import { useRouter } from "next/navigation";
+import { useLeaderboard } from "../hooks/useLeaderboard";
 
 const HomePage = () => {
+  const { homeStats } = useLeaderboard();
   const router = useRouter();
+
   return (
     <div className="h-screen flex flex-col">
       <Navbar />
@@ -25,25 +28,29 @@ const HomePage = () => {
           <Button
             variant="tertiary"
             size="lg"
-            onClick={() => router.push("/join-with-code")}
+            onClick={() => router.push("/start-war")}
           >
-            Join with code
+            Join using Arena ID
           </Button>
         </div>
 
         <Separator variant="tertiary" className="my-6" />
 
-        <div className="flex items-center gap-20">
+        <div className="grid grid-cols-3 items-center gap-20">
           <div className="text-center">
-            <h1 className="text-4xl font-bold">1240</h1>
+            <h1 className="text-4xl font-bold">{homeStats?.totalWars || 0}</h1>
             <p className="text-muted-foreground">wars fought</p>
           </div>
           <div className="text-center">
-            <h1 className="text-4xl font-bold">3200</h1>
+            <h1 className="text-4xl font-bold">
+              {homeStats?.totalPlayers || 0}
+            </h1>
             <p className="text-muted-foreground">players</p>
           </div>
           <div className="text-center">
-            <h1 className="text-4xl font-bold">98 WPM</h1>
+            <h1 className="text-4xl font-bold">
+              {homeStats?.avgTopWpm || 0} WPM
+            </h1>
             <p className="text-muted-foreground">avg top speed</p>
           </div>
         </div>
@@ -61,7 +68,7 @@ const HomePage = () => {
             <Card.Header>
               <Card.Title>Spectate Mode</Card.Title>
               <Card.Description>
-                Watch any live war as a spectator — no account needed.
+                Watch any live war as a spectator — account needed.
               </Card.Description>
             </Card.Header>
           </Card>
