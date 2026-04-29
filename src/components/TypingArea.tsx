@@ -193,10 +193,8 @@ const TypingArea = ({
   warData,
   setIsTimeStarted,
   isTimeStarted,
-  setIsBackspaceDisable,
 }: {
   backspaceData: any;
-  setIsBackspaceDisable: (data: any) => void;
   isBackspaceDisabled: boolean;
   passageData: any;
   isHost: boolean;
@@ -214,6 +212,22 @@ const TypingArea = ({
   const [passage, setPassageState] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const [finishedAt, setFinishedAt] = useState<any>(null);
+
+  const caretRef = useRef<HTMLSpanElement>(null);
+  const charRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
+  useEffect(() => {
+    const currentChar = charRefs.current[typed.length];
+    const container = caretRef.current?.parentElement;
+    if (!currentChar || !container || !caretRef.current) return;
+
+    const charRect = currentChar.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+
+    caretRef.current.style.left = `${charRect.left - containerRect.left}px`;
+    caretRef.current.style.top = `${charRect.top - containerRect.top}px`;
+    caretRef.current.style.height = `${charRect.height}px`;
+  }, [typed.length]);
 
   const warDataPassage = warData?.arena?.passage || "";
   const roomId = warData?.arena?.roomId || passageData?.roomId;
@@ -337,7 +351,7 @@ const TypingArea = ({
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Tab") e.preventDefault();
-    
+
     if (backspaceData?.isBackspaceDisabled && e.key === "Backspace")
       e.preventDefault();
   };
@@ -366,20 +380,26 @@ const TypingArea = ({
       />
 
       {/* render passage */}
-      <div className="text-2xl font-mono cursor-text">
+      <div className="text-2xl font-mono cursor-text relative">
+        {/* Single caret */}
+        <span
+          ref={caretRef}
+          className="absolute w-0.5 bg-yellow-500 transition-all duration-100 ease-out pointer-events-none"
+          style={{ position: "absolute" }}
+        />
+
         {passage?.split("").map((char: any, i: number) => {
           let color = "text-muted";
-
           if (i < typed.length) {
             color = typed[i] === char ? "text-green-500" : "text-red-500";
           }
 
           return (
-            <span key={i} className={`relative ${color}`}>
-              {/* cursor */}
-              {i === typed.length && (
-                <span className="absolute -left-0.5 top-0 h-full w-0.5 bg-accent animate-caret-blink" />
-              )}
+            <span
+              key={i}
+              ref={(el: any) => (charRefs.current[i] = el)}
+              className={`relative ${color}`}
+            >
               {char}
             </span>
           );

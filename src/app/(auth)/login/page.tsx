@@ -34,8 +34,6 @@ const LoginPage = () => {
       return;
     }
 
-    console.log("result", result);
-
     if (result?.ok) {
       console.log("Login success ✅");
       router.push("/");
@@ -46,17 +44,13 @@ const LoginPage = () => {
     <div className="flex flex-col items-center justify-center h-screen">
       <div className="p-5 rounded-3xl space-y-5 flex flex-col items-center">
         <div className="flex flex-col items-center gap-2">
-          <Image
-            src="/logo.png"
-            alt="KeyClash"
-            width={100}
-            height={100}
-            loading="eager"
-          />
-          <h1 className="text-3xl font-semibold">keywar</h1>
-          <h1 className="text-xl text-muted mb-10 text-center">
-            Login to continue
+          <h1 className="bg-linear-to-r from-white to-accent bg-clip-text text-transparent text-5xl logo-font">
+            keystroq
           </h1>
+          <h1 className="text-xl text-center">Login to continue</h1>
+          <p className="text-sm mb-5 text-muted">
+            Enter your credentials to access your account
+          </p>
         </div>
         <Form
           className="flex w-96 flex-col gap-4"
@@ -101,7 +95,7 @@ const LoginPage = () => {
           >
             <Label>Password</Label>
             <Input
-              placeholder="Enter your password"
+              placeholder="********"
               variant="secondary"
               {...register("password")}
             />

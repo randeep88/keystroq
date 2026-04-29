@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { toast } from "@heroui/react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 export const useDbUser = ({
@@ -8,6 +9,8 @@ export const useDbUser = ({
   userId?: string;
   email?: string;
 }) => {
+  const queryClient = useQueryClient();
+
   const { data: userById, isPending: isLoadingUserById } = useQuery({
     queryKey: ["user", userId],
     queryFn: async () => {
@@ -18,6 +21,7 @@ export const useDbUser = ({
     },
     enabled: !!userId,
   });
+
   const { data: userByEmail, isPending: isLoadingUserByEmail } = useQuery({
     queryKey: ["user", email],
     queryFn: async () => {
@@ -28,5 +32,39 @@ export const useDbUser = ({
     },
     enabled: !!email,
   });
-  return { userById, isLoadingUserById, userByEmail, isLoadingUserByEmail };
+
+  const { mutate: updatePhoto, isPending: isUpdating } = useMutation({
+    mutationFn: async (data: { userId: string; formData: FormData }) => {
+      const res = await axios.put(
+        `http://localhost:5000/api/user/update-photo/${data.userId}`,
+        data.formData,
+        { headers: { "Content-Type": "multipart/form-data" } },
+      );
+
+      return res?.data;
+    },
+    onSuccess: (data) => {
+      if (data.success) {
+        toast.success("Photo updated successfully");
+        if (userId) {
+          queryClient.invalidateQueries({ queryKey: ["user", userId] });
+        }
+        if (email) {
+          queryClient.invalidateQueries({ queryKey: ["user", email] });
+        }
+      }
+    },
+    onError: (error) => {
+      console.log(error);
+      toast.warning("Failed to update photo. Please try again.");
+    },
+  });
+  return {
+    userById,
+    isLoadingUserById,
+    userByEmail,
+    isLoadingUserByEmail,
+    updatePhoto,
+    isUpdating,
+  };
 };

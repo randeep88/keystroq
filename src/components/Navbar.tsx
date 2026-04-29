@@ -1,29 +1,36 @@
 "use client";
 
-import { Button, Chip, Surface } from "@heroui/react";
+import { Button } from "@heroui/react";
 import MenuDropdown from "./MenuDropdown";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Dot } from "lucide-react";
+import { useUser } from "../context/userContext";
 
 const Navbar = () => {
-  const { data, status } = useSession();
+  const { dbUser: user, isAuthenticated, isLoadingDbUser } = useUser();
   const router = useRouter();
-
-  const user = data?.user;
 
   return (
     <nav className="border-b">
       <div className="py-4">
         <div className="flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold">
-            keywar
+          <Link
+            href="/"
+            className="bg-linear-to-r from-white to-accent bg-clip-text text-transparent text-2xl logo-font"
+          >
+            keystroq
           </Link>
 
           <div className="flex items-center space-x-4">
-            {user && status === "authenticated" ? (
+            {user && isAuthenticated && !isLoadingDbUser ? (
               <>
+                <Button
+                  onClick={() => router.push("/")}
+                  variant="ghost"
+                  size="sm"
+                >
+                  Home
+                </Button>
                 <Button
                   onClick={() => router.push("/leaderboard")}
                   variant="ghost"

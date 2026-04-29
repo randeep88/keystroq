@@ -1,60 +1,95 @@
 "use client";
 
 import { useLeaderboard } from "@/src/hooks/useLeaderboard";
-import { Avatar, Surface } from "@heroui/react";
+import { Avatar, Spinner } from "@heroui/react";
 import { Table } from "@heroui/react";
+import { motion } from "motion/react";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 16 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.05,
+      duration: 0.2,
+    },
+  }),
+};
 
 const LeaderboardPage = () => {
   const { leaderboard, isLoadingLeaderboard } = useLeaderboard();
-  console.log("leaderboard", leaderboard);
 
   if (isLoadingLeaderboard) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex-1 flex flex-col pt-10 gap-10 w-5xl mx-auto h-[calc(100vh-6rem)] items-center justify-center">
+        <p className="flex items-center gap-3">
+          <Spinner color="current" size="sm" />
+          Loading...
+        </p>
+      </div>
+    );
   }
 
   return (
     <div className="flex-1 flex flex-col pt-10 gap-10 w-5xl mx-auto h-full items-start">
-      <div>
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        animate="visible"
+        custom={0}
+      >
         <p className="text-4xl font-bold">Leaderboard</p>
         <p className="text-muted text-lg mt-1.5">
           Top players ranked by best WPM
         </p>
-      </div>
+      </motion.div>
 
-      <Table>
-        <Table.ScrollContainer>
-          <Table.Content aria-label="Team members" className="w-full">
-            <Table.Header>
-              <Table.Column isRowHeader>RANK</Table.Column>
-              <Table.Column>PLAYER</Table.Column>
-              <Table.Column>BEST WPM</Table.Column>
-              <Table.Column>AVG WPM</Table.Column>
-              <Table.Column>WARS</Table.Column>
-              <Table.Column>WINS</Table.Column>
-            </Table.Header>
-            <Table.Body>
-              {leaderboard?.map((l: any, i: number) => (
-                <Table.Row key={i}>
-                  <Table.Cell>#{l.rank}</Table.Cell>
-                  <Table.Cell className="flex items-center gap-3">
-                    <Avatar size="sm" color="accent" variant="soft">
-                      <Avatar.Image alt={l.player.name} src={l.player.photo} />
-                      <Avatar.Fallback delayMs={600}>
-                        {l.player.name?.charAt(0).toUpperCase()}
-                      </Avatar.Fallback>
-                    </Avatar>
-                    {l.player.username}
-                  </Table.Cell>
-                  <Table.Cell>{l.bestWpm}</Table.Cell>
-                  <Table.Cell>{l.avgWpm}</Table.Cell>
-                  <Table.Cell>{l.wars}</Table.Cell>
-                  <Table.Cell>{l.wins}</Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table.Content>
-        </Table.ScrollContainer>
-      </Table>
+      <motion.div
+        className="w-full"
+        variants={fadeUp}
+        initial="hidden"
+        animate="visible"
+        custom={1}
+      >
+        <Table>
+          <Table.ScrollContainer>
+            <Table.Content aria-label="Team members" className="w-full">
+              <Table.Header>
+                <Table.Column isRowHeader>RANK</Table.Column>
+                <Table.Column>PLAYER</Table.Column>
+                <Table.Column>BEST WPM</Table.Column>
+                <Table.Column>AVG WPM</Table.Column>
+                <Table.Column>WARS</Table.Column>
+                <Table.Column>WINS</Table.Column>
+              </Table.Header>
+              <Table.Body>
+                {leaderboard?.map((l: any, i: number) => (
+                  <Table.Row key={i}>
+                    <Table.Cell>#{l.rank}</Table.Cell>
+                    <Table.Cell className="flex items-center gap-3">
+                      <Avatar size="sm" color="accent" variant="soft">
+                        <Avatar.Image
+                          alt={l.player.name}
+                          src={l.player.photo}
+                        />
+                        <Avatar.Fallback delayMs={600}>
+                          {l.player.name?.charAt(0).toUpperCase()}
+                        </Avatar.Fallback>
+                      </Avatar>
+                      {l.player.username}
+                    </Table.Cell>
+                    <Table.Cell>{l.bestWpm}</Table.Cell>
+                    <Table.Cell>{l.avgWpm}</Table.Cell>
+                    <Table.Cell>{l.wars}</Table.Cell>
+                    <Table.Cell>{l.wins}</Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table.Content>
+          </Table.ScrollContainer>
+        </Table>
+      </motion.div>
     </div>
   );
 };

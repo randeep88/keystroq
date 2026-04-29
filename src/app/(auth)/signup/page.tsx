@@ -10,18 +10,25 @@ import {
   Label,
   Separator,
   TextField,
+  toast,
 } from "@heroui/react";
 import axios from "axios";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 const SignUpPage = () => {
   const { register, handleSubmit } = useForm();
+  const router = useRouter();
 
   const onSubmit = async (data: any) => {
     if (!data) return;
+    const res = await axios.post("http://localhost:5000/api/auth/signup", data);
 
-    const res = await axios.post("http://localhost:4000/api/auth/signup", data);
+    if (res?.data.success) {
+      toast("Account created successfully");
+      router.push("/login");
+    }
     console.log("res.data", res.data);
   };
 
@@ -29,11 +36,10 @@ const SignUpPage = () => {
     <div className="flex flex-col items-center justify-center h-screen">
       <div className="p-5 rounded-3xl space-y-5 flex flex-col items-center">
         <div className="flex flex-col items-center gap-2">
-          <Image src="/logo.png" alt="KeyClash" width={100} height={100} />
-          <h1 className="text-3xl font-semibold">keywar</h1>
-          <h1 className="text-xl text-muted mb-5 text-center">
-            Create an account
+          <h1 className="bg-linear-to-r from-white to-accent bg-clip-text text-transparent text-5xl logo-font">
+            keystroq
           </h1>
+          <h1 className="text-xl text-center mb-5">Create an account</h1>
         </div>
         <Form
           className="flex w-96 flex-col gap-4"

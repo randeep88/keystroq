@@ -1,5 +1,5 @@
 import { Avatar, Dropdown, Label } from "@heroui/react";
-import { Link, LogOut, Swords, User } from "lucide-react";
+import { Home, Link, LogOut, Swords, Trophy, User } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -9,7 +9,7 @@ const MenuDropdown = ({ user }: { user: any }) => {
     <Dropdown>
       <Dropdown.Trigger className="rounded-full">
         <Avatar size="sm">
-          <Avatar.Image alt={user.name} src={user?.image} />
+          <Avatar.Image alt={user.name} src={user?.photo} />
           <Avatar.Fallback delayMs={600}>
             {user.name?.charAt(0).toUpperCase()}
           </Avatar.Fallback>
@@ -19,7 +19,7 @@ const MenuDropdown = ({ user }: { user: any }) => {
         <div className="px-3 pt-3 pb-1">
           <div className="flex items-center gap-2">
             <Avatar size="sm">
-              <Avatar.Image alt={user.name} src={user?.image} />
+              <Avatar.Image alt={user.name} src={user?.photo} />
               <Avatar.Fallback delayMs={600}>
                 {user.name?.charAt(0).toUpperCase()}
               </Avatar.Fallback>
@@ -31,22 +31,34 @@ const MenuDropdown = ({ user }: { user: any }) => {
           </div>
         </div>
         <Dropdown.Menu>
-          <Dropdown.Item id="profile" textValue="Profile">
+          <Dropdown.Item
+            onClick={() => router.push("/profile")}
+            id="profile"
+            textValue="Profile"
+          >
             <div className="flex w-full items-center gap-2">
               <User className="size-3.5 text-muted" />
               <Label>Profile</Label>
             </div>
           </Dropdown.Item>
-          <Dropdown.Item id="create-war" textValue="Create a War">
+          <Dropdown.Item
+            onClick={() => router.push("/")}
+            id="home"
+            textValue="Home"
+          >
             <div className="flex w-full items-center gap-2">
-              <Swords className="size-3.5 text-muted" />
-              <Label>Create a War</Label>
+              <Home className="size-3.5 text-muted" />
+              <Label>Home</Label>
             </div>
           </Dropdown.Item>
-          <Dropdown.Item id="join-with-code" textValue="Join with code">
+          <Dropdown.Item
+            onClick={() => router.push("/leaderboard")}
+            id="leaderboard"
+            textValue="Leaderboard"
+          >
             <div className="flex w-full items-center gap-2">
-              <Link className="size-3.5 text-muted" />
-              <Label>Join with code</Label>
+              <Trophy className="size-3.5 text-muted" />
+              <Label>Leaderboard</Label>
             </div>
           </Dropdown.Item>
           <Dropdown.Item

@@ -2,8 +2,9 @@
 
 import { useDbUser } from "@/src/hooks/useDbUser";
 import useWar from "@/src/hooks/useWar";
-import { Button, Chip, Separator, Surface } from "@heroui/react";
-import { PartyPopper, Star, Trophy } from "lucide-react";
+import { Button, Chip, Separator, Spinner, Surface } from "@heroui/react";
+import { Trophy } from "lucide-react";
+import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { use } from "react";
 
@@ -22,6 +23,18 @@ const getMinutesAndSeconds = (
     minutes,
     seconds,
   };
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 16 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.05,
+      duration: 0.2,
+    },
+  }),
 };
 
 const ResultPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
@@ -70,12 +83,25 @@ const ResultPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
   const finishedIn = getMinutesAndSeconds(winner?.finishedAt, war?.startedAt);
 
   if (isLoadingWar || isLoadingUserById) {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex-1 flex flex-col pt-10 gap-10 w-5xl mx-auto h-[calc(100vh-6rem)] items-center justify-center">
+        <p className="flex items-center gap-3">
+          <Spinner color="current" size="sm" />
+          Loading...
+        </p>
+      </div>
+    );
   }
 
   return (
     <div className="flex-1 flex flex-col pt-10 gap-10 max-w-8xl mx-auto w-full h-full items-center">
-      <div className="flex flex-col items-center gap-3">
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        animate="visible"
+        custom={0}
+        className="flex flex-col items-center gap-3"
+      >
         <Chip color="success" className="uppercase">
           War Finished
         </Chip>
@@ -89,9 +115,15 @@ const ResultPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
             {finishedIn.minutes}m {finishedIn.seconds}s
           </span>
         </p>
-      </div>
+      </motion.div>
 
-      <div className="grid grid-cols-2 gap-10 w-5xl mx-auto">
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        animate="visible"
+        custom={1}
+        className="grid grid-cols-2 gap-10 w-5xl mx-auto"
+      >
         {war?.players?.map((player: any) => (
           <Surface
             key={player?.id}
@@ -138,9 +170,15 @@ const ResultPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
             </div>
           </Surface>
         ))}
-      </div>
+      </motion.div>
 
-      <div className="flex gap-4">
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        animate="visible"
+        custom={2}
+        className="flex gap-4"
+      >
         <Button
           onClick={() => router.push("/start-war")}
           variant="primary"
@@ -155,7 +193,7 @@ const ResultPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
         >
           Leaderboard
         </Button>
-      </div>
+      </motion.div>
     </div>
   );
 };

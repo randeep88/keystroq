@@ -15,10 +15,24 @@ import {
   Spinner,
   Surface,
 } from "@heroui/react";
+import { formatDistanceToNow } from "date-fns";
 import { CheckCheck, Copy } from "lucide-react";
+import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 16 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.05,
+      duration: 0.2,
+    },
+  }),
+};
 
 const StartWarPage = () => {
   const [isCopied, setIsCopied] = useState(false);
@@ -27,8 +41,6 @@ const StartWarPage = () => {
   const [isOpponentJoinedArena, setIsOpponentJoinedArena] = useState(false);
 
   const { recentWars, isLoadingRecentWars } = useWar();
-
-  console.log("recentWars", recentWars);
 
   const router = useRouter();
 
@@ -94,17 +106,48 @@ const StartWarPage = () => {
     leaveRoom(arenaId);
   };
 
+  if (isLoadingRecentWars) {
+    return (
+      <div className="flex-1 flex flex-col pt-10 gap-10 w-5xl mx-auto h-[calc(100vh-6rem)] items-center justify-center">
+        <p className="flex items-center gap-3">
+          <Spinner color="current" size="sm" />
+          Loading...
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex-1 flex flex-col gap-10 pt-10 pb-10 items-start justify-start max-w-4xl mx-auto w-full">
       <div className="flex flex-col gap-2 w-full">
-        <h1 className="text-4xl font-semibold">Start a War</h1>
-        {!isGeneratedArenaId && (
-          <p className="text-lg text-muted">
+        <motion.h1
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={0}
+          className="text-4xl font-semibold"
+        >
+          Start a War
+        </motion.h1>
+        {!isGeneratedArenaId && !isOpponent && (
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={1}
+            className="text-lg text-muted"
+          >
             Create an arena or join one with an arena ID
-          </p>
+          </motion.p>
         )}
         {!isGeneratedArenaId && (
-          <div className="flex gap-4 mt-5 w-full">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={2}
+            className="flex gap-4 mt-5 w-full"
+          >
             <Button
               onClick={handleGenerateArenaId}
               variant="primary"
@@ -116,12 +159,18 @@ const StartWarPage = () => {
             {!roomNotification?.users && (
               <JoinArenaModal handleJoinArena={handleJoinArena} />
             )}
-          </div>
+          </motion.div>
         )}
       </div>
 
       {isGeneratedArenaId && (
-        <div className="w-full">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={2}
+          className="w-full"
+        >
           <p className="font-medium">Your Arena ID</p>
           <p className="text-sm text-muted">
             Share with your opponent to join the arena
@@ -144,137 +193,155 @@ const StartWarPage = () => {
               {isCopied ? "Copied!" : "Copy"}
             </Button>
           </Surface>
-        </div>
+        </motion.div>
       )}
 
       {/* for Host */}
-      {isGeneratedArenaId && (
-        <div className="w-full">
-          {isHost &&
-            roomNotification?.users?.length > 0 &&
-            isGeneratedArenaId && (
-              <Surface className="p-4">
-                <p className="font-medium text-lg">Players in Arena</p>
-                {allUsers?.map((u, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center justify-between mt-5"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Avatar color="accent" variant="soft">
-                        <Avatar.Image
-                          src={u?.photoURL || ""}
-                          alt={u?.username}
-                        />
-                        <Avatar.Fallback>{u?.name[0]}</Avatar.Fallback>
-                      </Avatar>
 
-                      <p>
-                        {u?.username}{" "}
-                        {u?.id === user?.id && (
-                          <span className="text-muted">(You)</span>
-                        )}
-                      </p>
-                    </div>
-                    {roomNotification?.host === u?.id && (
-                      <Chip variant="soft" size="sm" color="warning">
-                        Host
-                      </Chip>
+      {/* <div className="w-full"> */}
+      {isHost && roomNotification?.users?.length > 0 && isGeneratedArenaId && (
+        <motion.div
+          className="w-full"
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={3}
+        >
+          <Surface className="p-4 w-full">
+            <p className="font-medium text-lg">Players in Arena</p>
+            {allUsers?.map((u, i) => (
+              <div key={i} className="flex items-center justify-between mt-5">
+                <div className="flex items-center gap-3">
+                  <Avatar color="accent" variant="soft">
+                    <Avatar.Image src={u?.photoURL || ""} alt={u?.username} />
+                    <Avatar.Fallback>{u?.name[0]}</Avatar.Fallback>
+                  </Avatar>
+
+                  <p>
+                    {u?.username}{" "}
+                    {u?.id === user?.id && (
+                      <span className="text-muted">(You)</span>
                     )}
-                  </div>
-                ))}
-                {roomNotification?.users?.length === 1 && (
-                  <div className="flex items-center justify-between mt-5">
-                    <div className="flex items-center gap-3">
-                      <Skeleton
-                        animationType="shimmer"
-                        className="size-10 rounded-full"
-                      />
-
-                      <div className="flex items-center gap-2">
-                        <Spinner size="sm" color="current" />
-                        <p className="shimmer-text">
-                          Waiting for the opponent to join...
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  </p>
+                </div>
+                {roomNotification?.host === u?.id && (
+                  <Chip variant="soft" size="sm" color="warning">
+                    Host
+                  </Chip>
                 )}
-              </Surface>
-            )}
+              </div>
+            ))}
+            {roomNotification?.users?.length === 1 && (
+              <div className="flex items-center justify-between mt-5">
+                <div className="flex items-center gap-3">
+                  <Skeleton
+                    animationType="shimmer"
+                    className="size-10 rounded-full"
+                  />
 
-          {/* for Opponent */}
-          {isOpponent &&
-            roomNotification?.users?.length > 0 &&
-            isOpponentJoinedArena && (
-              <Surface className="p-4">
-                <p className="font-medium text-lg">Players in Arena</p>
-                {allUsers?.map((u, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center justify-between mt-5"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Avatar color="accent" variant="soft">
-                        <Avatar.Image
-                          src={u?.photoURL || ""}
-                          alt={u?.username}
-                        />
-                        <Avatar.Fallback>{u?.name[0]}</Avatar.Fallback>
-                      </Avatar>
-
-                      <p>
-                        {u?.username}{" "}
-                        {u?.id === user?.id && (
-                          <span className="text-muted">(You)</span>
-                        )}
-                      </p>
-                    </div>
-                    {roomNotification?.host === u?.id && (
-                      <Chip variant="soft" size="sm" color="warning">
-                        Host
-                      </Chip>
-                    )}
+                  <div className="flex items-center gap-2">
+                    <Spinner size="sm" color="current" />
+                    <p className="shimmer-text">
+                      Waiting for the opponent to join...
+                    </p>
                   </div>
-                ))}
-              </Surface>
+                </div>
+              </div>
             )}
-
-          {isHost && allUsers && (
-            <div className="flex items-center gap-3 justify-end mt-5">
-              <Button variant="tertiary" size="lg" onClick={handleCancelWar}>
-                Cancel
-              </Button>
-              <Button
-                variant="primary"
-                isDisabled={allUsers?.length !== 2 || readyStatus === null}
-                size="lg"
-                onClick={handleStartWar}
-              >
-                Start War
-              </Button>
-            </div>
-          )}
-
-          {isOpponent && allUsers && (
-            <div className="flex items-center gap-3 justify-end mt-5">
-              <Button variant="tertiary" size="lg" onClick={handleCancelWar}>
-                Cancel
-              </Button>
-              <Button
-                onClick={() => ready(roomNotification?.roomId)}
-                variant="primary"
-                size="lg"
-              >
-                Ready
-              </Button>
-            </div>
-          )}
-        </div>
+          </Surface>
+        </motion.div>
       )}
 
-      {!isGeneratedArenaId && (
-        <div className="w-full">
+      {/* for Opponent */}
+      {isOpponent &&
+        roomNotification?.users?.length > 0 &&
+        isOpponentJoinedArena && (
+          <motion.div
+            className="w-full"
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={3}
+          >
+            <Surface className="p-4 w-full">
+              <p className="font-medium text-lg">Players in Arena</p>
+              {allUsers?.map((u, i) => (
+                <div key={i} className="flex items-center justify-between mt-5">
+                  <div className="flex items-center gap-3">
+                    <Avatar color="accent" variant="soft">
+                      <Avatar.Image src={u?.photoURL || ""} alt={u?.username} />
+                      <Avatar.Fallback>{u?.name[0]}</Avatar.Fallback>
+                    </Avatar>
+
+                    <p>
+                      {u?.username}{" "}
+                      {u?.id === user?.id && (
+                        <span className="text-muted">(You)</span>
+                      )}
+                    </p>
+                  </div>
+                  {roomNotification?.host === u?.id && (
+                    <Chip variant="soft" size="sm" color="warning">
+                      Host
+                    </Chip>
+                  )}
+                </div>
+              ))}
+            </Surface>
+          </motion.div>
+        )}
+
+      {isHost && allUsers && (
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={4}
+          className="flex items-center gap-3 justify-end w-full"
+        >
+          <Button variant="tertiary" size="lg" onClick={handleCancelWar}>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            isDisabled={allUsers?.length !== 2 || readyStatus === null}
+            size="lg"
+            onClick={handleStartWar}
+          >
+            Start War
+          </Button>
+        </motion.div>
+      )}
+
+      {isOpponent && allUsers && (
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={4}
+          className="flex items-center gap-3 justify-end w-full"
+        >
+          <Button variant="tertiary" size="lg" onClick={handleCancelWar}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => ready(roomNotification?.roomId)}
+            variant="primary"
+            size="lg"
+          >
+            Ready
+          </Button>
+        </motion.div>
+      )}
+
+      {!isGeneratedArenaId && !roomNotification?.users && (
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={3}
+          className="w-full"
+        >
           <p className="uppercase text-sm text-muted mb-2 font-semibold">
             recent wars
           </p>
@@ -302,7 +369,12 @@ const StartWarPage = () => {
                       </div>
                       <Card.Description>
                         vs {war?.players[1]?.user?.username} &bull;{" "}
-                        {war?.startedAt}
+                        {war?.startedAt
+                          ? formatDistanceToNow(
+                              new Date(Number(war.startedAt)),
+                              { addSuffix: true },
+                            )
+                          : "N/A"}
                       </Card.Description>
                     </div>
                   </div>
@@ -310,11 +382,16 @@ const StartWarPage = () => {
               </Card>
             ))}
           </div>
-        </div>
+        </motion.div>
       )}
 
-      {!isGeneratedArenaId && (
-        <div>
+      {!isGeneratedArenaId && !roomNotification?.users && (
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={4}
+        >
           <p className="uppercase text-sm text-muted mb-2 font-semibold">
             tips
           </p>
@@ -338,7 +415,7 @@ const StartWarPage = () => {
               </Card.Header>
             </Card>
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   );

@@ -106,3 +106,14 @@
     background-position: -200% 0;
   }
 }
+
+@font-face {
+  font-family: "Thezila";
+  src: url("../../public/fonts/logisme-hf-free.regular.ttf") ;
+  font-weight: 100;
+  font-style: normal;
+}
+
+.logo-font {
+  font-family: "Thezila", sans-serif;
+}
