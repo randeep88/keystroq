@@ -7,6 +7,9 @@ export const useLeaderboard = () => {
     queryFn: async () => {
       const response = await axios.get(
         `http://localhost:5000/api/leaderboard/global`,
+        {
+          withCredentials: true,
+        }
       );
       return response.data.data;
     },
@@ -17,6 +20,9 @@ export const useLeaderboard = () => {
     queryFn: async () => {
       const response = await axios.get(
         `http://localhost:5000/api/leaderboard/home-stats`,
+        {
+          withCredentials: true,
+        }
       );
       return response.data.data;
     },

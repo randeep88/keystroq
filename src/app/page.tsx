@@ -28,16 +28,16 @@ const HomePage = () => {
 
   const [isLoginOpen, setIsLoginOpen] = useState(false);
 
-  if (isLoadingHomeStats) {
-    return (
-      <div className="flex-1 flex flex-col pt-10 gap-10 w-5xl mx-auto h-[calc(100vh-6rem)] items-center justify-center">
-        <p className="flex items-center gap-3">
-          <Spinner color="current" size="sm" />
-          Loading...
-        </p>
-      </div>
-    );
-  }
+  // if (isLoadingHomeStats) {
+  //   return (
+  //     <div className="flex-1 flex flex-col pt-10 gap-10 w-5xl mx-auto h-[calc(100vh-6rem)] items-center justify-center">
+  //       <p className="flex items-center gap-3">
+  //         <Spinner color="current" size="sm" />
+  //         Loading...
+  //       </p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="h-screen flex flex-col">
@@ -153,14 +153,6 @@ const HomePage = () => {
               </Card.Description>
             </Card.Header>
           </Card>
-          {/* <Card>
-            <Card.Header>
-              <Card.Title>Spectate Mode</Card.Title>
-              <Card.Description>
-                Watch any live war as a spectator — account needed.
-              </Card.Description>
-            </Card.Header>
-          </Card> */}
           <Card>
             <Card.Header>
               <Card.Title>Leaderboard</Card.Title>

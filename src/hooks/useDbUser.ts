@@ -16,6 +16,9 @@ export const useDbUser = ({
     queryFn: async () => {
       const res = await axios.get(
         `http://localhost:5000/api/user/get-by-id/${userId}`,
+        {
+          withCredentials: true,
+        },
       );
       return res.data.data;
     },
@@ -27,6 +30,9 @@ export const useDbUser = ({
     queryFn: async () => {
       const res = await axios.get(
         `http://localhost:5000/api/user/get-by-email/${email}`,
+        {
+          withCredentials: true,
+        },
       );
       return res.data.data;
     },
@@ -38,7 +44,10 @@ export const useDbUser = ({
       const res = await axios.put(
         `http://localhost:5000/api/user/update-photo/${data.userId}`,
         data.formData,
-        { headers: { "Content-Type": "multipart/form-data" } },
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          withCredentials: true,
+        },
       );
 
       return res?.data;

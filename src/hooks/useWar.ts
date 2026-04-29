@@ -7,6 +7,9 @@ const useWar = (roomId?: string) => {
     queryFn: async () => {
       const res = await axios.get(
         `http://localhost:5000/api/war/get-by-roomId/${roomId}`,
+        {
+          withCredentials: true,
+        },
       );
       return res?.data.data;
     },
@@ -16,7 +19,9 @@ const useWar = (roomId?: string) => {
   const { data: recentWars, isPending: isLoadingRecentWars } = useQuery({
     queryKey: ["recent-wars"],
     queryFn: async () => {
-      const res = await axios.get(`http://localhost:5000/api/war/recent`);
+      const res = await axios.get(`http://localhost:5000/api/war/recent`, {
+        withCredentials: true,
+      });
       return res?.data.data;
     },
   });

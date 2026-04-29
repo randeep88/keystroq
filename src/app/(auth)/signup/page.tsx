@@ -23,7 +23,13 @@ const SignUpPage = () => {
 
   const onSubmit = async (data: any) => {
     if (!data) return;
-    const res = await axios.post("http://localhost:5000/api/auth/signup", data);
+    const res = await axios.post(
+      "http://localhost:5000/api/auth/signup",
+      data,
+      {
+        withCredentials: true,
+      },
+    );
 
     if (res?.data.success) {
       toast("Account created successfully");
