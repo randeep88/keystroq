@@ -437,7 +437,6 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
       <div className="flex-1">
         <TypingArea
           backspaceData={backspaceData}
-          setIsBackspaceDisable={setIsBackspaceDisabled}
           isHost={isHost}
           passageData={passageData}
           setPassage={setPassage}

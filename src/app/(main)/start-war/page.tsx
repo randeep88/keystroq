@@ -100,7 +100,7 @@ const StartWarPage = () => {
   };
 
   const handleCancelWar = () => {
-    if (!user) return;
+    if (!user) return; 
     setIsGeneratedArenaId(false);
     setIsOpponentJoinedArena(false);
     leaveRoom(arenaId);
