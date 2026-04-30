@@ -1,4 +1,3 @@
-import axios from "axios";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
@@ -25,15 +24,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
       },
       authorize: async (credentials) => {
-        const res = await api.post("/auth/login", {
-          email: credentials.email,
-          password: credentials.password,
-        });
+        try {
+          const res = await api.post("/auth/login", {
+            email: credentials.email,
+            password: credentials.password,
+          });
 
-        const user = res.data.data;
+          const user = res.data.data;
+          if (!user) return null;
 
-        return user;
-      },  
+          return user;
+        } catch (error) {
+          console.error("Login error:", error);
+          return null;
+        }
+      },
     }),
   ],
 });
