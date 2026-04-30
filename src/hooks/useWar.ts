@@ -1,16 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { api } from "../utils/api";
 
 const useWar = (roomId?: string) => {
   const { data: war, isPending: isLoadingWar } = useQuery({
     queryKey: ["war", roomId],
     queryFn: async () => {
-      const res = await axios.get(
-        `http://localhost:5000/api/war/get-by-roomId/${roomId}`,
-        {
-          withCredentials: true,
-        },
-      );
+      const res = await api.get(`/war/get-by-roomId/${roomId}`);
       return res?.data.data;
     },
     enabled: !!roomId,
@@ -19,9 +14,7 @@ const useWar = (roomId?: string) => {
   const { data: recentWars, isPending: isLoadingRecentWars } = useQuery({
     queryKey: ["recent-wars"],
     queryFn: async () => {
-      const res = await axios.get(`http://localhost:5000/api/war/recent`, {
-        withCredentials: true,
-      });
+      const res = await api.get(`/war/recent`);
       return res?.data.data;
     },
   });

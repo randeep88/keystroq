@@ -1,6 +1,7 @@
 "use client";
 
 import GoogleSignin from "@/src/components/GoogleSignin";
+import { api } from "@/src/utils/api";
 import {
   Button,
   Description,
@@ -12,8 +13,6 @@ import {
   TextField,
   toast,
 } from "@heroui/react";
-import axios from "axios";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
@@ -23,19 +22,15 @@ const SignUpPage = () => {
 
   const onSubmit = async (data: any) => {
     if (!data) return;
-    const res = await axios.post(
-      "http://localhost:5000/api/auth/signup",
-      data,
-      {
-        withCredentials: true,
-      },
-    );
+
+    const res = await api.post("/auth/signup", data);
 
     if (res?.data.success) {
       toast("Account created successfully");
       router.push("/login");
+    } else {
+      toast(res?.data.message || "Failed to create account");
     }
-    console.log("res.data", res.data);
   };
 
   return (

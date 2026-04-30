@@ -1,16 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { api } from "../utils/api";
 
 export const useFetchAllUsers = (userIds: string[]) => {
   const { data: allUsers, isPending: isLoadingAllUsers } = useQuery({
     queryKey: ["users", userIds],
     queryFn: async () => {
-      const promises = userIds.map((id) =>
-        axios.get(`http://localhost:5000/api/user/get-by-id/${id}`,
-        {
-          withCredentials: true,
-        })
-      );
+      const promises = userIds.map((id) => api.get(`/user/get-by-id/${id}`));
       const responses = await Promise.all(promises);
       return responses.map((res) => res.data.data);
     },

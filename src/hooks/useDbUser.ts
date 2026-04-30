@@ -1,6 +1,7 @@
 import { toast } from "@heroui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import { api } from "../utils/api";
 
 export const useDbUser = ({
   userId,
@@ -14,12 +15,7 @@ export const useDbUser = ({
   const { data: userById, isPending: isLoadingUserById } = useQuery({
     queryKey: ["user", userId],
     queryFn: async () => {
-      const res = await axios.get(
-        `http://localhost:5000/api/user/get-by-id/${userId}`,
-        {
-          withCredentials: true,
-        },
-      );
+      const res = await api.get(`/user/get-by-id/${userId}`);
       return res.data.data;
     },
     enabled: !!userId,
@@ -28,12 +24,7 @@ export const useDbUser = ({
   const { data: userByEmail, isPending: isLoadingUserByEmail } = useQuery({
     queryKey: ["user", email],
     queryFn: async () => {
-      const res = await axios.get(
-        `http://localhost:5000/api/user/get-by-email/${email}`,
-        {
-          withCredentials: true,
-        },
-      );
+      const res = await api.get(`/user/get-by-email/${email}`);
       return res.data.data;
     },
     enabled: !!email,
@@ -41,12 +32,11 @@ export const useDbUser = ({
 
   const { mutate: updatePhoto, isPending: isUpdating } = useMutation({
     mutationFn: async (data: { userId: string; formData: FormData }) => {
-      const res = await axios.put(
-        `http://localhost:5000/api/user/update-photo/${data.userId}`,
+      const res = await api.put(
+        `/user/update-photo/${data.userId}`,
         data.formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
-          withCredentials: true,
         },
       );
 
