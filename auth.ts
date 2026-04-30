@@ -2,6 +2,7 @@ import axios from "axios";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
+import { api } from "./src/utils/api";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   secret: process.env.BETTER_AUTH_SECRET,
@@ -24,7 +25,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
       },
       authorize: async (credentials) => {
-        const res = await axios.post("http://localhost:5000/api/auth/login", {
+        const res = await api.post("/auth/login", {
           email: credentials.email,
           password: credentials.password,
         });
