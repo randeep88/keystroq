@@ -9,8 +9,8 @@ const sora = Sora({
 });
 
 export const metadata: Metadata = {
-  title: "KeyClash",
-  description: "Type your way to glory",
+  title: "keystroq",
+  description: "Type Fast, Win Wars",
 };
 
 export default function RootLayout({
@@ -25,7 +25,7 @@ export default function RootLayout({
       className={`h-full antialiased ${sora.className}`}
     >
       <body className="min-h-full w-[90%] mx-auto flex flex-col bg-background">
-        <Toast.Provider placement="bottom end"/>
+        <Toast.Provider placement="bottom end" />
         <Providers>{children}</Providers>
       </body>
     </html>
