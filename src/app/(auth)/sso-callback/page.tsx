@@ -57,15 +57,22 @@ export default function SSOCallback() {
   const handleUsernameSubmit = async () => {
     try {
       const trimmed = username.trim();
-
       if (!trimmed) {
         toast.warning("Username cannot be empty");
         return;
       }
 
-      await signUp.update({ username: trimmed });
+      // update ki jagah create use karo username ke saath
+      const { error } = await signUp.create({ username: trimmed });
 
-      await finalizeSignUp();
+      if (error) {
+        toast.warning(error?.message);
+        return;
+      }
+
+      if (signUp.status === "complete") {
+        await finalizeSignUp();
+      }
     } catch (err: any) {
       console.log(err);
       toast.warning(err?.errors?.[0]?.message);
