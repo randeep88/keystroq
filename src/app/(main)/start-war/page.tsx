@@ -10,7 +10,6 @@ import {
   Button,
   Card,
   Chip,
-  Separator,
   Skeleton,
   Spinner,
   Surface,
@@ -20,7 +19,7 @@ import { CheckCheck, Copy } from "lucide-react";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { customAlphabet } from "nanoid";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -72,7 +71,9 @@ const StartWarPage = () => {
   const handleGenerateArenaId = () => {
     if (!user) return;
 
-    const arenaId = uuidv4();
+    const nanoid = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
+
+    const arenaId = nanoid();
     setArenaId(arenaId);
     setIsGeneratedArenaId(true);
     joinRoom(arenaId);
