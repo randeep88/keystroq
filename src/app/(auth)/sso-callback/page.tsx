@@ -37,16 +37,50 @@ export default function SSOCallback() {
       if (!clerk.loaded || hasRun.current) return;
       hasRun.current = true;
 
+      // Case 1: Existing signin complete
       if (signIn.status === "complete") {
         await finalizeSignIn();
         return;
       }
 
+      // Case 2: Pehle se logged in user ka existing session
+      if (signIn.existingSession || signUp.existingSession) {
+        const sessionId =
+          signIn.existingSession?.sessionId ||
+          signUp.existingSession?.sessionId;
+        if (sessionId) {
+          await clerk.setActive({
+            session: sessionId,
+            navigate: ({ session, decorateUrl }) => {
+              if (session?.currentTask) return;
+              window.location.href = decorateUrl("/");
+            },
+          });
+          return;
+        }
+      }
+
+      // Case 3: Google email existing Clerk account se match kiya — signin me transfer
+      if (signUp.isTransferable) {
+        await signIn.create({ transfer: true });
+
+        await finalizeSignIn();
+        return;
+      }
+
+      // Case 4: Naya user — username collect karo pehle
+      if (signIn.isTransferable) {
+        setShowUsername(true);
+        return;
+      }
+
+      // Case 5: Already missing_requirements pe hai
       if (signUp.status === "missing_requirements") {
         setShowUsername(true);
         return;
       }
 
+      // Case 6: Complete
       if (signUp.status === "complete") {
         await finalizeSignUp();
         return;
@@ -62,8 +96,11 @@ export default function SSOCallback() {
         return;
       }
 
-      // update ki jagah create use karo username ke saath
-      const { error } = await signUp.create({ username: trimmed });
+      // transfer + username ek saath pass karo
+      const { error } = await signUp.create({
+        transfer: true,
+        username: trimmed,
+      });
 
       if (error) {
         toast.warning(error?.message);
@@ -72,6 +109,9 @@ export default function SSOCallback() {
 
       if (signUp.status === "complete") {
         await finalizeSignUp();
+      } else {
+        console.log("signUp status after create:", signUp.status);
+        toast.warning("Something went wrong: " + signUp.status);
       }
     } catch (err: any) {
       console.log(err);
@@ -85,18 +125,15 @@ export default function SSOCallback() {
         <p className="text-sm text-white">
           Choose a username to complete signup
         </p>
-
         <Input
           placeholder="johndoe"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           className="w-80"
         />
-
         <Button onClick={handleUsernameSubmit} className="w-80">
           Continue
         </Button>
-
         <div id="clerk-captcha" />
       </div>
     );
