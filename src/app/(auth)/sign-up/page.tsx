@@ -175,7 +175,7 @@ const SignUpPage = () => {
         </Form>
 
         <div className="text-center text-sm text-muted-foreground">
-          Don't have an account?{" "}
+          Already have an account?{" "}
           <a href="/login" className="underline">
             Login
           </a>
