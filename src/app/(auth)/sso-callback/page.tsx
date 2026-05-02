@@ -108,29 +108,21 @@ export default function SSOCallback() {
 
   const handleUsernameSubmit = async () => {
     try {
-      console.log("username:", username.trim().toString());
-      if (!username.trim()) {
+      const trimmed = username.trim();
+
+      if (!trimmed) {
         toast.warning("Username cannot be empty");
         return;
       }
 
       await signUp.update({
-        username: username.trim().toString(),
+        username: trimmed,
       });
-      console.log("signUp.status:", signUp.status);
 
-      if (signUp.status === "missing_requirements") {
-        console.log("error message:", signUp.status);
-        toast.warning(signUp.status);
-        return;
-      }
-
-      if (signUp.status === "complete") {
-        await finalizeSignUp();
-      }
+      await finalizeSignUp();
     } catch (err: any) {
       console.log("full error:", err);
-      toast.warning(err?.errors?.[0]?.message);
+      toast.warning(err?.errors?.[0]?.message || "Error updating username");
     }
   };
 
