@@ -73,10 +73,8 @@ export default function SSOCallback() {
       // Case 3: Google email existing Clerk account se match kiya
       if (signUp.isTransferable) {
         await signIn.create({ transfer: true });
-        if (signIn.status === "complete") {
-          await finalizeSignIn();
-          return;
-        }
+
+        await finalizeSignIn();
         router.push("/login");
         return;
       }
