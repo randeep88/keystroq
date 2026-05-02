@@ -4,7 +4,7 @@ import { useAuth } from "@clerk/nextjs";
 import { useEffect } from "react";
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000",
+  baseURL: `${process.env.NEXT_PUBLIC_SERVER_URL}/api` || "http://localhost:5000",
 });
 
 const useApi = () => {
