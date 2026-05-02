@@ -91,7 +91,8 @@ const EditProfile = ({ user }: { user: any }) => {
                   />
                 </div>
                 <Button type="submit" className="w-full">
-                  Submit
+                  {loading && <Spinner color="current" />}{" "}
+                  {loading ? "Submitting..." : "Submit"}{" "}
                 </Button>
               </Form>
             </Modal.Body>
