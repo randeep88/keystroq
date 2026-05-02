@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 const EditProfile = ({ user }: { user: any }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [loading, setLoading] = useState(false);
+
   const { register, handleSubmit } = useForm<any>();
   const { ref: registerRef, ...registerRest } = register("photo");
 
@@ -16,9 +18,11 @@ const EditProfile = ({ user }: { user: any }) => {
     const file = data.photo?.[0];
 
     if (!file || !user) return;
+    setLoading(true);
 
     await user.setProfileImage({ file });
 
+    setLoading(false);
     setPreviewUrl(null);
     setIsModalOpen(false);
   };
