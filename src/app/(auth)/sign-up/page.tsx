@@ -35,15 +35,10 @@ const SignUpPage = () => {
         username: data.username,
       });
 
-      if (signUp.status === "missing_requirements") {
-        console.log(signUp.requiredFields);
-      }
-
       if (signUp.status === "complete") {
         await signUp.finalize({
           navigate: ({ session, decorateUrl }) => {
             if (session?.currentTask) {
-              console.log("session?.currentTask", session?.currentTask);
               return;
             }
 
@@ -61,7 +56,6 @@ const SignUpPage = () => {
 
       if (res?.error) {
         toast.warning(res?.error?.message || "Failed to create account");
-        console.log(signUp.status);
         return;
       }
     } catch (error: any) {

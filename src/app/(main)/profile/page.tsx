@@ -146,7 +146,7 @@ const ProfilePage = () => {
                                 src={
                                   war?.players.find(
                                     (p: any) => p?.user?.id !== user?.id,
-                                  )?.user?.photo
+                                  )?.user?.imageUrl
                                 }
                               />
                               <Avatar.Fallback>

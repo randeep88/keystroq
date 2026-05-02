@@ -110,11 +110,9 @@ export default function SSOCallback() {
       if (signUp.status === "complete") {
         await finalizeSignUp();
       } else {
-        console.log("signUp status after create:", signUp.status);
         toast.warning("Something went wrong: " + signUp.status);
       }
     } catch (err: any) {
-      console.log(err);
       toast.warning(err?.errors?.[0]?.message);
     }
   };

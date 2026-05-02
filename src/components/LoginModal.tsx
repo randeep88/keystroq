@@ -41,13 +41,10 @@ const LoginModal = ({
       if (signIn.status === "complete") {
         const sessionId = signIn.createdSessionId;
 
-        console.log(
-          sessionId ? "sessionId created ✅" : "sessionId not created ❌",
-        );
+     
         toast.success("Login Successfully");
         router.push("/");
       } else {
-        console.log("Incomplete status:", signIn.status);
         toast.warning("Login incomplete");
       }
     } catch (err: any) {

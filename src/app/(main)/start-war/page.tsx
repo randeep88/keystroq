@@ -270,7 +270,7 @@ const StartWarPage = () => {
                 <div key={i} className="flex items-center justify-between mt-5">
                   <div className="flex items-center gap-3">
                     <Avatar color="accent" variant="soft">
-                      <Avatar.Image src={u?.photoURL || ""} alt={u?.username} />
+                      <Avatar.Image src={u?.imageUrl || ""} alt={u?.username} />
                       <Avatar.Fallback>{u?.fullName[0]}</Avatar.Fallback>
                     </Avatar>
 
@@ -354,9 +354,9 @@ const StartWarPage = () => {
                   <Card.Header>
                     <div className="flex items-center gap-2">
                       <Avatar variant="soft" color="accent">
-                        <Avatar.Image src={war?.players[0]?.user?.photo} />
+                        <Avatar.Image src={war?.players[0]?.user?.imageUrl} />
                         <Avatar.Fallback>
-                          {war?.players[0]?.user?.username
+                          {war?.players[0]?.user?.fullName
                             ?.charAt(0)
                             .toUpperCase()}
                         </Avatar.Fallback>

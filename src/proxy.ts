@@ -14,14 +14,10 @@ export default clerkMiddleware(
   async (auth, req) => {
     const { userId } = await auth();
 
-    console.log(userId);
-
-    // already logged in hai aur auth route pe hai to redirect karo
     if (isAuthRoute(req) && userId) {
       return Response.redirect(new URL("/", req.url));
     }
 
-    // protected route pe hai aur logged in nahi to login pe bhejo
     if (isProtectedRoute(req)) await auth.protect();
   },
   {

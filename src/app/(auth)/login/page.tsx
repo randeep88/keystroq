@@ -39,16 +39,12 @@ const LoginPage = () => {
         await signIn.finalize({
           navigate: ({ session, decorateUrl }) => {
             const url = decorateUrl("/");
-            console.log("decorated url:", url);
-            console.log("session:", session);
 
             if (session?.currentTask) return;
 
             if (url.startsWith("http")) {
-              console.log("redirecting to:", url);
               window.location.href = url;
             } else {
-              console.log("redirecting to:", url);
               router.push(url);
             }
           },

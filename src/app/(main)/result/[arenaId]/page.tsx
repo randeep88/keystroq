@@ -42,42 +42,8 @@ const ResultPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
   const router = useRouter();
   const { war, isLoadingWar } = useWar(arenaId);
 
-  const winner = war?.players.reduce((best: any, current: any) => {
-    if (Number(current.progress) > Number(best.progress)) {
-      return current;
-    }
+  const winner = war?.players?.find((player: any) => player?.isWinner);
 
-    if (Number(current.progress) < Number(best.progress)) {
-      return best;
-    }
-    if (Number(current.wpm) > Number(best.wpm)) {
-      return current;
-    }
-
-    if (Number(current.wpm) < Number(best.wpm)) {
-      return best;
-    }
-
-    if (Number(current.accuracy) > Number(best.accuracy)) {
-      return current;
-    }
-
-    if (Number(current.accuracy) < Number(best.accuracy)) {
-      return best;
-    }
-
-    if (Number(current.error) < Number(best.error)) {
-      return current;
-    }
-
-    if (Number(current.error) > Number(best.error)) {
-      return best;
-    }
-
-    return Number(current.finishedAt) < Number(best.finishedAt)
-      ? current
-      : best;
-  });
   const { userById, isLoadingUserById } = useDbUser({ userId: winner?.userId });
 
   const finishedIn = getMinutesAndSeconds(winner?.finishedAt, war?.startedAt);

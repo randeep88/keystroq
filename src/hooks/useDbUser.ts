@@ -55,7 +55,6 @@ export const useDbUser = ({
       }
     },
     onError: (error) => {
-      console.log(error);
       toast.warning("Failed to update photo. Please try again.");
     },
   });
