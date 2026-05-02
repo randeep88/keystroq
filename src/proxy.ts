@@ -1,32 +1,48 @@
-import { auth } from "@/auth";
-import { NextResponse } from "next/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-export default auth((req) => {
-  const isLoggedIn = !!req.auth;
+const isProtectedRoute = createRouteMatcher([
+  "/arena",
+  "/leaderboard",
+  "/profile",
+  "/result",
+  "/start-war",
+]);
 
-  const protectedRoutes = [
-    "/arena",
-    "/leaderboard",
-    "/profile",
-    "/result",
-    "/start-war",
-  ];
+const isAuthRoute = createRouteMatcher(["/login", "/sign-up"]);
 
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    req.nextUrl.pathname.startsWith(route),
-  );
+export default clerkMiddleware(
+  async (auth, req) => {
+    const { userId } = await auth();
 
-  if (isProtectedRoute && !isLoggedIn) {
-    return NextResponse.redirect(new URL("/login", req.nextUrl));
-  }
-});
+    console.log(userId);
+
+    // already logged in hai aur auth route pe hai to redirect karo
+    if (isAuthRoute(req) && userId) {
+      return Response.redirect(new URL("/", req.url));
+    }
+
+    // protected route pe hai aur logged in nahi to login pe bhejo
+    if (isProtectedRoute(req)) await auth.protect();
+  },
+  {
+    signInUrl: "/login",
+    signUpUrl: "/sign-up",
+  },
+);
+
+// export default clerkMiddleware(
+//   async (auth, req) => {
+//     if (isProtectedRoute(req)) await auth.protect();
+//   },
+//   {
+//     signInUrl: "/login",
+//     signUpUrl: "/sign-up",
+//   },
+// );
 
 export const config = {
   matcher: [
-    "/arena/:path*",
-    "/leaderboard/:path*",
-    "/profile/:path*",
-    "/result/:path*",
-    "/start-war/:path*",
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    "/(api|trpc)(.*)",
   ],
 };

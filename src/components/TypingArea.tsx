@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import useSockets from "../hooks/useSockets";
-import { useUser } from "../context/userContext";
+import { useUserContext } from "../context/userContext";
 import { Surface } from "@heroui/react";
 
 const words = [
@@ -271,7 +271,7 @@ const TypingArea = ({
     setPassageState(passageData?.passage);
   }, [passageData?.passage, passageData?.isBackspaceDisabled]);
 
-  const { dbUser: user } = useUser();
+  const { dbUser: user } = useUserContext();
   const { sendLiveData, finishWar } = useSockets(user?.id);
 
   useEffect(() => {

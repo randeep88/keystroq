@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { api } from "../utils/api";
+import useApi from "../utils/api";
 
 export const useFetchAllUsers = (userIds: string[]) => {
+
+  const api = useApi();
   const { data: allUsers, isPending: isLoadingAllUsers } = useQuery({
     queryKey: ["users", userIds],
     queryFn: async () => {

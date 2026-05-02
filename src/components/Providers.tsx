@@ -1,10 +1,10 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 import { ReactNode } from "react";
 import { UserProvider } from "../context/userContext";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const queryClient = new QueryClient();
 
@@ -17,9 +17,9 @@ const Providers = ({ children }: { children: ReactNode }) => {
       disableTransitionOnChange
     >
       <QueryClientProvider client={queryClient}>
-        <SessionProvider>
+        <ClerkProvider>
           <UserProvider>{children}</UserProvider>
-        </SessionProvider>
+        </ClerkProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );

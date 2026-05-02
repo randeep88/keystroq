@@ -1,8 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { api } from "../utils/api";
-
+import useApi from "../utils/api";
 export const useLeaderboard = () => {
-  const { data: leaderboard, isPending: isLoadingLeaderboard } = useQuery({
+  const api = useApi();
+  const {
+    data: leaderboard,
+    isPending: isLoadingLeaderboard,
+    error: leaderboardError,
+  } = useQuery({
     queryKey: ["leaderboard"],
     queryFn: async () => {
       const response = await api.get(`/leaderboard/global`);
@@ -10,7 +14,11 @@ export const useLeaderboard = () => {
     },
   });
 
-  const { data: homeStats, isPending: isLoadingHomeStats } = useQuery({
+  const {
+    data: homeStats,
+    isPending: isLoadingHomeStats,
+    error: homeStatsError,
+  } = useQuery({
     queryKey: ["home-stats"],
     queryFn: async () => {
       const response = await api.get(`/leaderboard/home-stats`);
@@ -18,5 +26,12 @@ export const useLeaderboard = () => {
     },
   });
 
-  return { leaderboard, isLoadingLeaderboard, homeStats, isLoadingHomeStats };
+  return {
+    leaderboard,
+    isLoadingLeaderboard,
+    leaderboardError,
+    homeStats,
+    isLoadingHomeStats,
+    homeStatsError,
+  };
 };

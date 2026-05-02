@@ -1,17 +1,20 @@
+import { useClerk } from "@clerk/nextjs";
 import { Avatar, Dropdown, Label } from "@heroui/react";
-import { Home, Link, LogOut, Swords, Trophy, User } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { Home, LogOut, Trophy, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const MenuDropdown = ({ user }: { user: any }) => {
   const router = useRouter();
+  const { signOut } = useClerk();
+
+  if (!user) return null;
   return (
     <Dropdown>
       <Dropdown.Trigger className="rounded-full">
         <Avatar size="sm">
-          <Avatar.Image alt={user.name} src={user?.photo} />
+          <Avatar.Image alt={user?.fullName} src={user?.imageUrl} />
           <Avatar.Fallback delayMs={600}>
-            {user.name?.charAt(0).toUpperCase()}
+            {user?.fullName?.charAt(0).toUpperCase()}
           </Avatar.Fallback>
         </Avatar>
       </Dropdown.Trigger>
@@ -19,14 +22,16 @@ const MenuDropdown = ({ user }: { user: any }) => {
         <div className="px-3 pt-3 pb-1">
           <div className="flex items-center gap-2">
             <Avatar size="sm">
-              <Avatar.Image alt={user.name} src={user?.photo} />
+              <Avatar.Image alt={user?.fullName} src={user?.imageUrl} />
               <Avatar.Fallback delayMs={600}>
-                {user.name?.charAt(0).toUpperCase()}
+                {user?.fullName?.charAt(0).toUpperCase()}
               </Avatar.Fallback>
             </Avatar>
             <div className="flex flex-col gap-0">
-              <p className="text-sm leading-5 font-medium">{user?.name}</p>
-              <p className="text-xs leading-none text-muted">{user?.email}</p>
+              <p className="text-sm leading-5 font-medium">{user?.username}</p>
+              <p className="text-xs leading-none text-muted">
+                {user?.emailAddresses[0]?.emailAddress}
+              </p>
             </div>
           </div>
         </div>
@@ -63,7 +68,7 @@ const MenuDropdown = ({ user }: { user: any }) => {
           </Dropdown.Item>
           <Dropdown.Item
             onClick={() => {
-              signOut();
+              signOut({ redirectUrl: "/login" });
               router.replace("/login");
             }}
             id="logout"

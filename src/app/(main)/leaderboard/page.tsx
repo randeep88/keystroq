@@ -20,6 +20,8 @@ const fadeUp = {
 const LeaderboardPage = () => {
   const { leaderboard, isLoadingLeaderboard } = useLeaderboard();
 
+  const filteredLeaderboard = leaderboard?.filter((l: any) => l.bestWpm > 0);
+
   if (isLoadingLeaderboard) {
     return (
       <div className="flex-1 flex flex-col pt-10 gap-10 w-5xl mx-auto h-[calc(100vh-6rem)] items-center justify-center">
@@ -64,27 +66,39 @@ const LeaderboardPage = () => {
                 <Table.Column>WINS</Table.Column>
               </Table.Header>
               <Table.Body>
-                {leaderboard?.map((l: any, i: number) => (
-                  <Table.Row key={i}>
-                    <Table.Cell>#{l.rank}</Table.Cell>
-                    <Table.Cell className="flex items-center gap-3">
-                      <Avatar size="sm" color="accent" variant="soft">
-                        <Avatar.Image
-                          alt={l.player.name}
-                          src={l.player.photo}
-                        />
-                        <Avatar.Fallback delayMs={600}>
-                          {l.player.name?.charAt(0).toUpperCase()}
-                        </Avatar.Fallback>
-                      </Avatar>
-                      {l.player.username}
+                {filteredLeaderboard?.length > 0 ? (
+                  filteredLeaderboard.map((l: any, i: number) => (
+                    <Table.Row key={i}>
+                      <Table.Cell>#{l.rank}</Table.Cell>
+                      <Table.Cell className="flex items-center gap-3">
+                        <Avatar size="sm" color="accent" variant="soft">
+                          <Avatar.Image
+                            alt={l.player.fullName}
+                            src={l.player.imageUrl}
+                          />
+                          <Avatar.Fallback>
+                            {l.player.fullName?.charAt(0).toUpperCase()}
+                          </Avatar.Fallback>
+                        </Avatar>
+                        {l.player.username}
+                      </Table.Cell>
+                      <Table.Cell>{l.bestWpm}</Table.Cell>
+                      <Table.Cell>{l.avgWpm}</Table.Cell>
+                      <Table.Cell>{l.wars}</Table.Cell>
+                      <Table.Cell>{l.wins}</Table.Cell>
+                    </Table.Row>
+                  ))
+                ) : (
+                  <Table.Row>
+                    <Table.Cell colSpan={6}>
+                      <div className="w-full flex items-center justify-center py-10">
+                        <p className="text-muted text-lg font-semibold">
+                          No players found
+                        </p>
+                      </div>
                     </Table.Cell>
-                    <Table.Cell>{l.bestWpm}</Table.Cell>
-                    <Table.Cell>{l.avgWpm}</Table.Cell>
-                    <Table.Cell>{l.wars}</Table.Cell>
-                    <Table.Cell>{l.wins}</Table.Cell>
                   </Table.Row>
-                ))}
+                )}
               </Table.Body>
             </Table.Content>
           </Table.ScrollContainer>

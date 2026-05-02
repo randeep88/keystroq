@@ -1,7 +1,7 @@
 "use client";
 
 import JoinArenaModal from "@/src/components/JoinArenaModal";
-import { useUser } from "@/src/context/userContext";
+import { useUserContext } from "@/src/context/userContext";
 import { useFetchAllUsers } from "@/src/hooks/useFetchAllUsers";
 import useSockets from "@/src/hooks/useSockets";
 import useWar from "@/src/hooks/useWar";
@@ -44,7 +44,7 @@ const StartWarPage = () => {
 
   const router = useRouter();
 
-  const { dbUser: user } = useUser();
+  const { dbUser: user } = useUserContext();
 
   const {
     joinRoom,
@@ -100,7 +100,7 @@ const StartWarPage = () => {
   };
 
   const handleCancelWar = () => {
-    if (!user) return; 
+    if (!user) return;
     setIsGeneratedArenaId(false);
     setIsOpponentJoinedArena(false);
     leaveRoom(arenaId);
@@ -213,8 +213,8 @@ const StartWarPage = () => {
               <div key={i} className="flex items-center justify-between mt-5">
                 <div className="flex items-center gap-3">
                   <Avatar color="accent" variant="soft">
-                    <Avatar.Image src={u?.photoURL || ""} alt={u?.username} />
-                    <Avatar.Fallback>{u?.name[0]}</Avatar.Fallback>
+                    <Avatar.Image src={u?.imageUrl || ""} alt={u?.username} />
+                    <Avatar.Fallback>{u?.fullName[0]}</Avatar.Fallback>
                   </Avatar>
 
                   <p>
@@ -270,7 +270,7 @@ const StartWarPage = () => {
                   <div className="flex items-center gap-3">
                     <Avatar color="accent" variant="soft">
                       <Avatar.Image src={u?.photoURL || ""} alt={u?.username} />
-                      <Avatar.Fallback>{u?.name[0]}</Avatar.Fallback>
+                      <Avatar.Fallback>{u?.fullName[0]}</Avatar.Fallback>
                     </Avatar>
 
                     <p>
@@ -334,56 +334,58 @@ const StartWarPage = () => {
         </motion.div>
       )}
 
-      {!isGeneratedArenaId && !roomNotification?.users && (
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          custom={3}
-          className="w-full"
-        >
-          <p className="uppercase text-sm text-muted mb-2 font-semibold">
-            recent wars
-          </p>
-          <div className="flex flex-col gap-2">
-            {recentWars?.map((war: any, index: number) => (
-              <Card key={index}>
-                <Card.Header>
-                  <div className="flex items-center gap-2">
-                    <Avatar variant="soft" color="accent">
-                      <Avatar.Image src={war?.players[0]?.user?.photo} />
-                      <Avatar.Fallback>
-                        {war?.players[0]?.user?.username
-                          ?.charAt(0)
-                          .toUpperCase()}
-                      </Avatar.Fallback>
-                    </Avatar>
-                    <div className="w-full">
-                      <div className="flex items-center justify-between">
-                        <Card.Title>
-                          {war?.players[0]?.user?.username}
-                        </Card.Title>
-                        <p className="text-sm text-muted">
-                          {war?.players[0]?.wpm} wpm
-                        </p>
+      {!isGeneratedArenaId &&
+        !roomNotification?.users &&
+        recentWars?.length > 0 && (
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={3}
+            className="w-full"
+          >
+            <p className="uppercase text-sm text-muted mb-2 font-semibold">
+              recent wars
+            </p>
+            <div className="flex flex-col gap-2">
+              {recentWars?.map((war: any, index: number) => (
+                <Card key={index}>
+                  <Card.Header>
+                    <div className="flex items-center gap-2">
+                      <Avatar variant="soft" color="accent">
+                        <Avatar.Image src={war?.players[0]?.user?.photo} />
+                        <Avatar.Fallback>
+                          {war?.players[0]?.user?.username
+                            ?.charAt(0)
+                            .toUpperCase()}
+                        </Avatar.Fallback>
+                      </Avatar>
+                      <div className="w-full">
+                        <div className="flex items-center justify-between">
+                          <Card.Title>
+                            {war?.players[0]?.user?.username}
+                          </Card.Title>
+                          <p className="text-sm text-muted">
+                            {war?.players[0]?.wpm} wpm
+                          </p>
+                        </div>
+                        <Card.Description>
+                          vs {war?.players[1]?.user?.username} &bull;{" "}
+                          {war?.startedAt
+                            ? formatDistanceToNow(
+                                new Date(Number(war.startedAt)),
+                                { addSuffix: true },
+                              )
+                            : "N/A"}
+                        </Card.Description>
                       </div>
-                      <Card.Description>
-                        vs {war?.players[1]?.user?.username} &bull;{" "}
-                        {war?.startedAt
-                          ? formatDistanceToNow(
-                              new Date(Number(war.startedAt)),
-                              { addSuffix: true },
-                            )
-                          : "N/A"}
-                      </Card.Description>
                     </div>
-                  </div>
-                </Card.Header>
-              </Card>
-            ))}
-          </div>
-        </motion.div>
-      )}
+                  </Card.Header>
+                </Card>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
       {!isGeneratedArenaId && !roomNotification?.users && (
         <motion.div

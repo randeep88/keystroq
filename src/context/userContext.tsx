@@ -1,13 +1,12 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import { createContext, useContext } from "react";
 import { useDbUser } from "../hooks/useDbUser";
+import { useUser } from "@clerk/nextjs";
 
 type UserContextType = {
   user: any;
-  status: string;
-  isAuthenticated: boolean;
+  isSignedIn: boolean | undefined;
   dbUser: any;
   isLoadingDbUser: boolean;
 };
@@ -15,21 +14,19 @@ type UserContextType = {
 const userContext = createContext<UserContextType | null>(null);
 
 const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const { data, status } = useSession();
-
-  const user = data?.user;
-  const isAuthenticated = !!user && status === "authenticated";
+  const { isSignedIn, user, isLoaded } = useUser();
 
   const { userByEmail, isLoadingUserByEmail } = useDbUser({
-    email: user?.email!,
+    email: user?.emailAddresses?.[0]?.emailAddress!,
   });
+
+  if (!isLoaded) return;
 
   return (
     <userContext.Provider
       value={{
         user,
-        status,
-        isAuthenticated,
+        isSignedIn,
         dbUser: userByEmail,
         isLoadingDbUser: isLoadingUserByEmail,
       }}
@@ -39,7 +36,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-const useUser = () => {
+const useUserContext = () => {
   const context = useContext(userContext);
 
   if (!context) {
@@ -49,4 +46,4 @@ const useUser = () => {
   return context;
 };
 
-export { useUser, UserProvider };
+export { useUserContext, UserProvider };

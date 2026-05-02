@@ -1,7 +1,10 @@
+"use client";
+
 import { useQuery } from "@tanstack/react-query";
-import { api } from "../utils/api";
+import useApi from "../utils/api";
 
 const useWar = (roomId?: string) => {
+  const api = useApi();
   const { data: war, isPending: isLoadingWar } = useQuery({
     queryKey: ["war", roomId],
     queryFn: async () => {

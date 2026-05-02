@@ -33,9 +33,9 @@ const EditProfile = ({ user }: { user: any }) => {
       <Modal.Trigger>
         <div className="rounded-full relative overflow-hidden group">
           <Avatar className="size-18" size="lg">
-            <Avatar.Image src={user?.photo} />
+            <Avatar.Image src={user?.imageUrl} />
             <Avatar.Fallback>
-              {user?.name?.charAt(0).toUpperCase()}
+              {user?.firstName?.charAt(0).toUpperCase()}
             </Avatar.Fallback>
           </Avatar>
           <div className="bg-black/50 absolute group-hover:opacity-100 opacity-0 transition-opacity inset-0 flex items-center justify-center">
@@ -57,9 +57,9 @@ const EditProfile = ({ user }: { user: any }) => {
               >
                 <div className="flex items-center gap-10 justify-center">
                   <Avatar className="size-52" size="lg">
-                    <Avatar.Image src={previewUrl || user?.photo} />
+                    <Avatar.Image src={previewUrl || user?.imageUrl} />
                     <Avatar.Fallback>
-                      {user?.name?.charAt(0).toUpperCase()}
+                      {user?.firstName?.charAt(0).toUpperCase()}
                     </Avatar.Fallback>
                   </Avatar>
                 </div>

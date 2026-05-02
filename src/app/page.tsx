@@ -5,9 +5,11 @@ import Navbar from "../components/Navbar";
 import { useRouter } from "next/navigation";
 import { useLeaderboard } from "../hooks/useLeaderboard";
 import { motion } from "motion/react";
-import { useUser } from "../context/userContext";
+import { useUserContext } from "../context/userContext";
 import LoginModal from "../components/LoginModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useSyncUser from "../hooks/useSyncUser";
+import { useAuth } from "@clerk/nextjs";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -22,22 +24,29 @@ const fadeUp = {
 };
 
 const HomePage = () => {
-  const { homeStats, isLoadingHomeStats } = useLeaderboard();
-  const { isAuthenticated } = useUser();
+  const { homeStats } = useLeaderboard();
   const router = useRouter();
 
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const { isLoaded } = useAuth();
+  const { user, isSignedIn } = useUserContext();
+  const { syncUser, isSyncing } = useSyncUser();
 
-  // if (isLoadingHomeStats) {
-  //   return (
-  //     <div className="flex-1 flex flex-col pt-10 gap-10 w-5xl mx-auto h-[calc(100vh-6rem)] items-center justify-center">
-  //       <p className="flex items-center gap-3">
-  //         <Spinner color="current" size="sm" />
-  //         Loading...
-  //       </p>
-  //     </div>
-  //   );
-  // }
+  // const [isLoginOpen, setIsLoginOpen] = useState(false);
+
+  useEffect(() => {
+    if (user && isSignedIn && isLoaded && !isSyncing) {
+      syncUser({
+        fullName: user?.fullName,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        email: user?.emailAddresses?.[0]?.emailAddress,
+        username: user?.username,
+        imageUrl: user?.imageUrl,
+        createdAt: user?.createdAt,
+        updatedAt: user?.updatedAt,
+      });
+    }
+  }, [user, isSignedIn, isLoaded]);
 
   return (
     <div className="h-screen flex flex-col">
@@ -84,10 +93,10 @@ const HomePage = () => {
           <Button
             size="lg"
             onClick={() => {
-              if (!isAuthenticated) {
-                setIsLoginOpen(true);
-                return;
-              }
+              // if (!isSignedIn) {
+              //   setIsLoginOpen(true);
+              //   return;
+              // }
 
               router.push("/start-war");
             }}
@@ -99,10 +108,10 @@ const HomePage = () => {
             variant="tertiary"
             size="lg"
             onClick={() => {
-              if (!isAuthenticated) {
-                setIsLoginOpen(true);
-                return;
-              }
+              // if (!isSignedIn) {
+              //   setIsLoginOpen(true);
+              //   return;
+              // }
 
               router.push("/start-war");
             }}
@@ -164,7 +173,7 @@ const HomePage = () => {
         </motion.div>
       </div>
 
-      <LoginModal isLoginOpen={isLoginOpen} setIsLoginOpen={setIsLoginOpen} />
+      {/* <LoginModal isLoginOpen={isLoginOpen} setIsLoginOpen={setIsLoginOpen} /> */}
     </div>
   );
 };

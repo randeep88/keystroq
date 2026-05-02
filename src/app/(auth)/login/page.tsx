@@ -1,6 +1,7 @@
 "use client";
 
 import GoogleSignin from "@/src/components/GoogleSignin";
+import { useAuth, useSignIn } from "@clerk/nextjs";
 import {
   Button,
   Description,
@@ -9,10 +10,10 @@ import {
   Input,
   Label,
   Separator,
+  Spinner,
   TextField,
+  toast,
 } from "@heroui/react";
-import { signIn } from "next-auth/react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
@@ -20,23 +21,43 @@ const LoginPage = () => {
   const { register, handleSubmit } = useForm();
   const router = useRouter();
 
+  const { signIn, fetchStatus } = useSignIn();
+
   const onSubmit = async (data: any) => {
-    if (!data) return;
+    try {
+      const { error } = await signIn.password({
+        emailAddress: data.email,
+        password: data.password,
+      });
 
-    const result = await signIn("credentials", {
-      redirect: false,
-      email: data.email,
-      password: data.password,
-    });
+      if (error) {
+        toast.warning(error.message || "Login failed");
+        return;
+      }
 
-    if (result?.error) {
-      console.error("Login failed:", result.error);
-      return;
-    }
+      if (signIn.status === "complete") {
+        await signIn.finalize({
+          navigate: ({ session, decorateUrl }) => {
+            const url = decorateUrl("/");
+            console.log("decorated url:", url);
+            console.log("session:", session);
 
-    if (result?.ok) {
-      console.log("Login success ✅");
-      router.push("/");
+            if (session?.currentTask) return;
+
+            if (url.startsWith("http")) {
+              console.log("redirecting to:", url);
+              window.location.href = url;
+            } else {
+              console.log("redirecting to:", url);
+              router.push(url);
+            }
+          },
+        });
+      } else {
+        console.error("Sign-in attempt not complete:", signIn);
+      }
+    } catch (err: any) {
+      toast.warning(err?.message);
     }
   };
 
@@ -79,7 +100,7 @@ const LoginPage = () => {
             isRequired
             minLength={8}
             name="password"
-            type="password"
+            type="text"
             validate={(value) => {
               if (value.length < 8) {
                 return "Password must be at least 8 characters";
@@ -106,6 +127,9 @@ const LoginPage = () => {
           </TextField>
           <div>
             <Button type="submit" className="w-full">
+              {fetchStatus === "fetching" && (
+                <Spinner color="current" size="sm" />
+              )}{" "}
               Login
             </Button>
             <div className="relative">
@@ -120,7 +144,7 @@ const LoginPage = () => {
 
         <div className="text-center text-sm text-muted-foreground">
           Don't have an account?{" "}
-          <a href="/signup" className="underline">
+          <a href="/sign-up" className="underline">
             Sign up
           </a>
         </div>

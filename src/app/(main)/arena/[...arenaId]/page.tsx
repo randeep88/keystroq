@@ -1,7 +1,7 @@
 "use client";
 
 import TypingArea from "@/src/components/TypingArea";
-import { useUser } from "@/src/context/userContext";
+import { useUserContext } from "@/src/context/userContext";
 import { useFetchAllUsers } from "@/src/hooks/useFetchAllUsers";
 import useSockets from "@/src/hooks/useSockets";
 import { Button, Chip, ProgressBar, Surface, Tabs, toast } from "@heroui/react";
@@ -41,7 +41,7 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
 
   const router = useRouter();
 
-  const { dbUser: user } = useUser();
+  const { dbUser: user } = useUserContext();
 
   const {
     warData,

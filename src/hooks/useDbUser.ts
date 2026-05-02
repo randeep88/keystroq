@@ -1,7 +1,7 @@
 import { toast } from "@heroui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import { api } from "../utils/api";
+import { useEffect } from "react";
+import useApi from "../utils/api";
 
 export const useDbUser = ({
   userId,
@@ -11,6 +11,7 @@ export const useDbUser = ({
   email?: string;
 }) => {
   const queryClient = useQueryClient();
+  const api = useApi();
 
   const { data: userById, isPending: isLoadingUserById } = useQuery({
     queryKey: ["user", userId],
@@ -58,6 +59,7 @@ export const useDbUser = ({
       toast.warning("Failed to update photo. Please try again.");
     },
   });
+
   return {
     userById,
     isLoadingUserById,

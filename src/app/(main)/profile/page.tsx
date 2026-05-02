@@ -1,9 +1,10 @@
 "use client";
 
 import EditProfile from "@/src/components/EditProfile";
-import { useUser } from "@/src/context/userContext";
+import { useUserContext } from "@/src/context/userContext";
 import { useLeaderboard } from "@/src/hooks/useLeaderboard";
 import useWar from "@/src/hooks/useWar";
+import { useAuth } from "@clerk/nextjs";
 import { Avatar, Button, Card, Chip, Spinner, Surface } from "@heroui/react";
 import { format, formatDistanceToNow } from "date-fns";
 import { motion } from "motion/react";
@@ -22,7 +23,8 @@ const fadeUp = {
 };
 
 const ProfilePage = () => {
-  const { dbUser: user } = useUser();
+  const { dbUser: user, user: clerkUser } = useUserContext();
+
   const { recentWars, isLoadingRecentWars } = useWar();
   const { leaderboard, isLoadingLeaderboard } = useLeaderboard();
   const router = useRouter();
@@ -53,54 +55,59 @@ const ProfilePage = () => {
         custom={0}
         className="flex items-center gap-5 w-full"
       >
-        <EditProfile user={user} />
+        <EditProfile user={clerkUser} />
         <div className="flex items-center justify-between w-full">
           <div>
-            <p className="font-semibold text-xl">{user?.username}</p>
+            <p className="font-semibold text-xl">{clerkUser?.username}</p>
             <p className="text-muted mt-1">
               member since{" "}
-              {user?.createdAt ? format(user?.createdAt, "MMM yyyy") : "N/A"}
+              {clerkUser?.createdAt
+                ? format(clerkUser?.createdAt, "MMM yyyy")
+                : "N/A"}
             </p>
           </div>
         </div>
-        <Chip variant="secondary" color="success" size="lg">
-          Rank #{isMe?.rank}
-        </Chip>
+        {isMe?.rank && (
+          <Chip variant="secondary" color="success" size="lg">
+            Rank #{isMe?.rank}
+          </Chip>
+        )}
       </motion.div>
 
-      <motion.div
-        variants={fadeUp}
-        initial="hidden"
-        animate="visible"
-        custom={1}
-        className="grid grid-cols-4 gap-16 justify-between items-center w-full"
-      >
-        <Card>
-          <Card.Header>
-            <p className="text-muted text-sm uppercase mb-1">Best WPM</p>
-            <p className="text-2xl font-medium">{isMe?.bestWpm}</p>
-          </Card.Header>
-        </Card>
-        <Card>
-          <Card.Header>
-            <p className="text-muted text-sm uppercase mb-1">avg WPM</p>
-            <p className="text-2xl font-medium">{isMe?.avgWpm}</p>
-          </Card.Header>
-        </Card>
-        <Card>
-          <Card.Header>
-            <p className="text-muted text-sm uppercase mb-1">wars</p>
-            <p className="text-2xl font-medium">{isMe?.wars}</p>
-          </Card.Header>
-        </Card>
-        <Card>
-          <Card.Header>
-            <p className="text-muted text-sm uppercase">wins</p>
-            <p className="text-2xl font-medium">{isMe?.wins}</p>
-          </Card.Header>
-        </Card>
-      </motion.div>
-
+      {isMe && (
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={1}
+          className="grid grid-cols-4 gap-16 justify-between items-center w-full"
+        >
+          <Card>
+            <Card.Header>
+              <p className="text-muted text-sm uppercase mb-1">Best WPM</p>
+              <p className="text-2xl font-medium">{isMe?.bestWpm}</p>
+            </Card.Header>
+          </Card>
+          <Card>
+            <Card.Header>
+              <p className="text-muted text-sm uppercase mb-1">avg WPM</p>
+              <p className="text-2xl font-medium">{isMe?.avgWpm}</p>
+            </Card.Header>
+          </Card>
+          <Card>
+            <Card.Header>
+              <p className="text-muted text-sm uppercase mb-1">wars</p>
+              <p className="text-2xl font-medium">{isMe?.wars}</p>
+            </Card.Header>
+          </Card>
+          <Card>
+            <Card.Header>
+              <p className="text-muted text-sm uppercase">wins</p>
+              <p className="text-2xl font-medium">{isMe?.wins}</p>
+            </Card.Header>
+          </Card>
+        </motion.div>
+      )}
       <motion.div
         variants={fadeUp}
         initial="hidden"

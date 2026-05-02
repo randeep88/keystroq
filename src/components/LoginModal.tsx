@@ -1,6 +1,7 @@
 "use client";
 
 import GoogleSignin from "@/src/components/GoogleSignin";
+import { useSignIn } from "@clerk/nextjs";
 import {
   Button,
   Description,
@@ -11,9 +12,8 @@ import {
   Modal,
   Separator,
   TextField,
+  toast,
 } from "@heroui/react";
-import { signIn } from "next-auth/react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
@@ -27,23 +27,33 @@ const LoginModal = ({
   const { register, handleSubmit } = useForm();
   const router = useRouter();
 
+  const { signIn } = useSignIn();
+
   const onSubmit = async (data: any) => {
     if (!data) return;
 
-    const result = await signIn("credentials", {
-      redirect: false,
-      email: data.email,
-      password: data.password,
-    });
+    try {
+      await signIn.create({
+        identifier: data.email,
+        password: data.password,
+      });
 
-    if (result?.error) {
-      console.error("Login failed:", result.error);
-      return;
-    }
+      if (signIn.status === "complete") {
+        const sessionId = signIn.createdSessionId;
 
-    if (result?.ok) {
-      console.log("Login success ✅");
-      router.push("/");
+        console.log(
+          sessionId ? "sessionId created ✅" : "sessionId not created ❌",
+        );
+        toast.success("Login Successfully");
+        router.push("/");
+      } else {
+        console.log("Incomplete status:", signIn.status);
+        toast.warning("Login incomplete");
+      }
+    } catch (err: any) {
+      console.log("Login error:", err);
+
+      toast.warning(err?.errors?.[0]?.message || "Something went wrong");
     }
   };
 
@@ -57,7 +67,9 @@ const LoginModal = ({
             <h1 className="bg-linear-to-r text-center from-white to-accent bg-clip-text text-transparent text-4xl logo-font">
               keystroq
             </h1>
-            <p className="text-lg text-center mb-5 text-muted">Login to continue</p>
+            <p className="text-lg text-center mb-5 text-muted">
+              Login to continue
+            </p>
             {/* </Modal.Header> */}
             <Modal.Body className="p-2">
               <Form

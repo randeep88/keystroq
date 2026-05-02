@@ -1,7 +1,7 @@
 "use client";
 
-import GoogleSignin from "@/src/components/GoogleSignin";
-import { api } from "@/src/utils/api";
+import GoogleSignIn from "@/src/components/GoogleSignin";
+import { useSignUp } from "@clerk/nextjs";
 import {
   Button,
   Description,
@@ -10,6 +10,7 @@ import {
   Input,
   Label,
   Separator,
+  Spinner,
   TextField,
   toast,
 } from "@heroui/react";
@@ -20,16 +21,51 @@ const SignUpPage = () => {
   const { register, handleSubmit } = useForm();
   const router = useRouter();
 
+  const { signUp, fetchStatus } = useSignUp();
+
   const onSubmit = async (data: any) => {
     if (!data) return;
 
-    const res = await api.post("/auth/signup", data);
+    try {
+      const res = await signUp.password({
+        emailAddress: data.email,
+        password: data.password,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        username: data.username,
+      });
 
-    if (res?.data.success) {
-      toast("Account created successfully");
-      router.push("/login");
-    } else {
-      toast(res?.data.message || "Failed to create account");
+      if (signUp.status === "missing_requirements") {
+        console.log(signUp.requiredFields);
+      }
+
+      if (signUp.status === "complete") {
+        await signUp.finalize({
+          navigate: ({ session, decorateUrl }) => {
+            if (session?.currentTask) {
+              console.log("session?.currentTask", session?.currentTask);
+              return;
+            }
+
+            const url = decorateUrl("/");
+            if (url.startsWith("http")) {
+              window.location.href = url;
+            } else {
+              router.push(url);
+            }
+          },
+        });
+      } else {
+        console.error("Sign-up attempt not complete:", signUp);
+      }
+
+      if (res?.error) {
+        toast.warning(res?.error?.message || "Failed to create account");
+        console.log(signUp.status);
+        return;
+      }
+    } catch (error: any) {
+      toast(error?.errors?.[0]?.message || "Failed to create account");
     }
   };
 
@@ -42,23 +78,31 @@ const SignUpPage = () => {
           </h1>
           <h1 className="text-xl text-center mb-5">Create an account</h1>
         </div>
-        <Form
-          className="flex w-96 flex-col gap-4"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <TextField isRequired name="name" type="name">
-            <Label>Name</Label>
-            <Input
-              placeholder="John Doe"
-              variant="secondary"
-              {...register("name")}
-            />
-            <FieldError />
-          </TextField>
+        <Form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex items-center gap-5">
+            <TextField isRequired name="name" type="name">
+              <Label>First Name</Label>
+              <Input
+                placeholder="John"
+                variant="secondary"
+                {...register("firstName")}
+              />
+              <FieldError />
+            </TextField>
+            <TextField isRequired name="name" type="name">
+              <Label>Last Name</Label>
+              <Input
+                placeholder="Doe"
+                variant="secondary"
+                {...register("lastName")}
+              />
+              <FieldError />
+            </TextField>
+          </div>
           <TextField isRequired name="username" type="username">
             <Label>Username</Label>
             <Input
-              placeholder="john"
+              placeholder="johndoe"
               variant="secondary"
               {...register("username")}
             />
@@ -112,8 +156,12 @@ const SignUpPage = () => {
             </Description>
             <FieldError />
           </TextField>
+          <div id="clerk-captcha" />
           <div>
             <Button type="submit" className="w-full">
+              {fetchStatus === "fetching" && (
+                <Spinner color="current" size="sm" />
+              )}{" "}
               Sign Up
             </Button>
             <div className="relative">
@@ -122,7 +170,7 @@ const SignUpPage = () => {
                 or
               </span>
             </div>
-            <GoogleSignin />
+            <GoogleSignIn />
           </div>
         </Form>
 
