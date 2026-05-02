@@ -2,7 +2,6 @@ import { Avatar, Button, Form, Modal, Spinner } from "@heroui/react";
 import { Edit } from "lucide-react";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDbUser } from "../hooks/useDbUser";
 
 const EditProfile = ({ user }: { user: any }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -13,19 +12,15 @@ const EditProfile = ({ user }: { user: any }) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { updatePhoto, isUpdating } = useDbUser({
-    userId: user?.id,
-    email: user?.email,
-  });
+  const handleEdit = async (data: any) => {
+    const file = data.photo?.[0];
 
-  const handleEditProfile = async (data: any) => {
-    const formData = new FormData();
-    formData.append("photo", data.photo[0]);
+    if (!file || !user) return;
 
-    updatePhoto(
-      { userId: user.id, formData },
-      { onSuccess: () => setIsModalOpen(false) },
-    );
+    await user.setProfileImage({ file });
+
+    setPreviewUrl(null);
+    setIsModalOpen(false);
   };
 
   return (
@@ -53,7 +48,7 @@ const EditProfile = ({ user }: { user: any }) => {
             <Modal.Body>
               <Form
                 className="flex p-2 flex-col gap-4"
-                onSubmit={handleSubmit(handleEditProfile)}
+                onSubmit={handleSubmit(handleEdit)}
               >
                 <div className="flex items-center gap-10 justify-center">
                   <Avatar className="size-52" size="lg">
@@ -75,6 +70,7 @@ const EditProfile = ({ user }: { user: any }) => {
                   <input
                     hidden
                     type="file"
+                    accept="image/*"
                     {...registerRest}
                     ref={(e) => {
                       registerRef(e);
@@ -91,8 +87,7 @@ const EditProfile = ({ user }: { user: any }) => {
                   />
                 </div>
                 <Button type="submit" className="w-full">
-                  {isUpdating && <Spinner color="current" />}
-                  {isUpdating ? "Submitting..." : "Submit"}
+                  Submit
                 </Button>
               </Form>
             </Modal.Body>

@@ -8,6 +8,8 @@ import { Show, useUser } from "@clerk/nextjs";
 
 const Navbar = () => {
   const { user } = useUser();
+
+
   const router = useRouter();
 
   return (
