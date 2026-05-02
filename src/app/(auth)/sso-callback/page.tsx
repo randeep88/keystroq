@@ -42,18 +42,6 @@ export default function SSOCallback() {
         return;
       }
 
-      if (signIn.existingSession || signUp.existingSession) {
-        const sessionId =
-          signIn.existingSession?.sessionId ||
-          signUp.existingSession?.sessionId;
-
-        if (sessionId) {
-          await clerk.setActive({ session: sessionId });
-          window.location.href = "/";
-          return;
-        }
-      }
-
       if (signUp.status === "missing_requirements") {
         setShowUsername(true);
         return;
@@ -75,14 +63,12 @@ export default function SSOCallback() {
         return;
       }
 
-      await signUp.update({
-        username: trimmed,
-      });
+      await signUp.update({ username: trimmed });
 
       await finalizeSignUp();
     } catch (err: any) {
       console.log(err);
-      toast.warning(err?.errors?.[0]?.message || "Something went wrong");
+      toast.warning(err?.errors?.[0]?.message);
     }
   };
 
