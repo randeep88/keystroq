@@ -300,58 +300,53 @@ const TypingArea = ({
     inputRef.current?.focus();
   }, []);
 
-  const calculate = (value: string) => {
-    if (!startTime) return { wpm: 0, accuracy: 100, errors: 0 };
-
-    const minutes = (Date.now() - startTime) / 1000 / 60;
-    const wordCount = value.length / 5;
-    const newWpm = Math.round(wordCount / minutes);
-
-    let correct = 0;
-    for (let i = 0; i < value.length; i++) {
-      if (value[i] === passage[i]) correct++;
-    }
-    const newAccuracy = Math.round((correct / value.length) * 100);
-
-    let errors = 0;
-    for (let i = 0; i < value.length; i++) {
-      if (value[i] !== passage[i]) errors++;
-    }
-
-    setWpm(newWpm);
-    setAccuracy(newAccuracy);
-    setError(errors);
-
-    return { wpm: newWpm, accuracy: newAccuracy, errors };
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
     if (!startTime && value.length === 1) {
       setStartTime(Date.now());
-      if (!isTimeStarted) setIsTimeStarted(true);
+      if (!isTimeStarted) {
+        setIsTimeStarted(true);
+      }
     }
-
-    const {
-      wpm: newWpm,
-      accuracy: newAccuracy,
-      errors: newErrors,
-    } = calculate(value) || { wpm: 0, accuracy: 100, errors: 0 };
 
     if (value.length === passage.length) {
       finishWar({
         userId: user?.id,
         roomId,
-        wpm: newWpm,
-        accuracy: newAccuracy,
-        error: newErrors,
+        wpm,
+        accuracy,
+        error,
         progress: 100,
         finishedAt: Date.now(),
       });
     }
 
     setTyped(value);
+    calculate(value);
+  };
+
+  const calculate = (value: string) => {
+    if (!startTime) return;
+
+    // WPM
+    const minutes = (Date.now() - startTime) / 1000 / 60;
+    const words = value.length / 5;
+    setWpm(Math.round(words / minutes));
+
+    // Accuracy
+    let correct = 0;
+    for (let i = 0; i < value.length; i++) {
+      if (value[i] === passage[i]) correct++;
+    }
+    setAccuracy(Math.round((correct / value.length) * 100));
+
+    // Errors
+    let errors = 0;
+    for (let i = 0; i < value.length; i++) {
+      if (value[i] !== passage[i]) errors++;
+    }
+    setError(errors);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
