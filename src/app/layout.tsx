@@ -11,6 +11,10 @@ const sora = Sora({
 export const metadata: Metadata = {
   title: "keystroq",
   description: "Type Fast, Win Wars",
+  icons: {
+    icon: "/logo.png",       
+    apple: "/logo.png",    
+  },
 };
 
 export default function RootLayout({

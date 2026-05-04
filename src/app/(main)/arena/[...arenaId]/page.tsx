@@ -133,7 +133,7 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
 
   return (
     <div className="flex-1 flex flex-col gap-10 pt-10 max-w-8xl mx-auto w-full select-none">
-      <div className="grid grid-cols-3 gap-10 w-full">
+      <div className="grid grid-cols-3 xl:gap-10 w-full">
         {user && (
           <Surface
             className={`p-5 rounded-3xl space-y-2  ${
@@ -145,9 +145,11 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
             }`}
             variant="default"
           >
-            <div className="flex items-center justify-between">
-              <p className="text-lg font-semibold">{user?.username}</p>
-              <div>
+            <div className="flex items-center gap-2 justify-between">
+              <p className="text-lg font-semibold line-clamp-1 text-ellipsis">
+                {user?.username}
+              </p>
+              <div className="flex items-center">
                 {warData?.arena?.host === user?.id && (
                   <Chip
                     className="me-2"
@@ -269,9 +271,11 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
             }`}
             variant="default"
           >
-            <div className="flex items-center justify-between">
-              <p className="text-lg font-semibold">{opponent?.username}</p>
-              <div>
+            <div className="flex items-center gap-2 justify-between">
+              <p className="text-lg font-semibold line-clamp-1 text-ellipsis">
+                {opponent?.username}
+              </p>
+              <div className="flex items-center">
                 {warData?.arena?.host !== user?.id && (
                   <Chip
                     className="me-2"
@@ -436,6 +440,7 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
       {/* Typing Area */}
       <div className="flex-1">
         <TypingArea
+        timeTaken={seconds}
           backspaceData={backspaceData}
           isHost={isHost}
           passageData={passageData}

@@ -31,8 +31,6 @@ const HomePage = () => {
   const { user, isSignedIn } = useUserContext();
   const { syncUser, isSyncing } = useSyncUser();
 
-  // const [isLoginOpen, setIsLoginOpen] = useState(false);
-
   useEffect(() => {
     if (user && isSignedIn && isLoaded && !isSyncing) {
       syncUser({
@@ -67,7 +65,7 @@ const HomePage = () => {
             initial="hidden"
             animate="visible"
             custom={1}
-            className="xl:text-7xl font-semibold"
+            className="xl:text-7xl lg:text-6xl font-semibold"
           >
             type fast, win wars.
           </motion.h1>
@@ -172,8 +170,6 @@ const HomePage = () => {
           </Card>
         </motion.div>
       </div>
-
-      {/* <LoginModal isLoginOpen={isLoginOpen} setIsLoginOpen={setIsLoginOpen} /> */}
     </div>
   );
 };

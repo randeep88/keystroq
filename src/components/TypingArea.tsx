@@ -185,6 +185,7 @@ const words = [
 
 const TypingArea = ({
   setPassage,
+  timeTaken,
   backspaceData,
   isBackspaceDisabled,
   passageData,
@@ -195,6 +196,7 @@ const TypingArea = ({
   isTimeStarted,
 }: {
   backspaceData: any;
+  timeTaken: number;
   isBackspaceDisabled: boolean;
   passageData: any;
   isHost: boolean;
@@ -318,6 +320,7 @@ const TypingArea = ({
         accuracy,
         error,
         progress: 100,
+        timeTaken,
         finishedAt: Date.now(),
       });
     }

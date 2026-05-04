@@ -8,21 +8,10 @@ import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { use } from "react";
 
-const getMinutesAndSeconds = (
-  winnerFinishedAt: number | string,
-  warStartedAt: number | string,
-) => {
-  const totalMilliseconds = Number(winnerFinishedAt) - Number(warStartedAt);
-
-  const totalSeconds = Math.floor(totalMilliseconds / 1000);
-
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-
-  return {
-    minutes,
-    seconds,
-  };
+const getTimeFromSeconds = (seconds: number) => {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return { minutes: mins, seconds: secs };
 };
 
 const fadeUp = {
@@ -46,7 +35,7 @@ const ResultPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
 
   const { userById, isLoadingUserById } = useDbUser({ userId: winner?.userId });
 
-  const finishedIn = getMinutesAndSeconds(winner?.finishedAt, war?.startedAt);
+  const finishedIn = getTimeFromSeconds(winner?.timeTaken);
 
   if (isLoadingWar || isLoadingUserById) {
     return (
@@ -122,16 +111,9 @@ const ResultPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
               </p>
 
               <p className="text-xl font-medium">
-                {
-                  getMinutesAndSeconds(player?.finishedAt, war?.startedAt)
-                    .minutes
-                }
-                m{" "}
-                {
-                  getMinutesAndSeconds(player?.finishedAt, war?.startedAt)
-                    .seconds
-                }
-                s <span className="text-sm text-muted">taken</span>
+                {getTimeFromSeconds(player?.timeTaken).minutes}m{" "}
+                {getTimeFromSeconds(player?.timeTaken).seconds}s{" "}
+                <span className="text-sm text-muted">taken</span>
               </p>
             </div>
           </Surface>
