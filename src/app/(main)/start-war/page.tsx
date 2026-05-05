@@ -234,7 +234,7 @@ const StartWarPage = () => {
             {roomNotification?.users?.length === 1 && (
               <div className="flex items-center justify-between mt-5">
                 <div className="flex items-center gap-3">
-                  <Skeleton 
+                  <Skeleton
                     animationType="shimmer"
                     className="size-10 rounded-full"
                   />
@@ -400,7 +400,7 @@ const StartWarPage = () => {
           <p className="uppercase text-sm text-muted mb-2 font-semibold">
             tips
           </p>
-          <div className="grid grid-cols-2 gap-10 max-w-4xl mx-auto mt-0">
+          <div className="grid grid-cols-2 md:gap-10 gap-5 max-w-4xl mx-auto mt-0">
             <Card>
               <Card.Header>
                 <Card.Title>Warm up first</Card.Title>
