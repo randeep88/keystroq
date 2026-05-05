@@ -59,7 +59,7 @@ const LoginPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <div className="p-5 rounded-3xl space-y-5 flex flex-col items-center">
+      <div className="md:p-5 p-2 rounded-3xl space-y-5 flex flex-col items-center">
         <div className="flex flex-col items-center gap-2">
           <h1 className="bg-linear-to-r from-white to-accent bg-clip-text text-transparent text-5xl logo-font">
             keystroq
@@ -70,7 +70,7 @@ const LoginPage = () => {
           </p>
         </div>
         <Form
-          className="flex w-96 flex-col gap-4"
+          className="flex md:w-96 w-full flex-col gap-4"
           onSubmit={handleSubmit(onSubmit)}
         >
           <TextField
@@ -140,7 +140,7 @@ const LoginPage = () => {
 
         <div className="text-center text-sm text-muted-foreground">
           Don't have an account?{" "}
-          <a href="/sign-up" className="underline">
+          <a href="/sign-up" className="underline font-semibold">
             Sign up
           </a>
         </div>

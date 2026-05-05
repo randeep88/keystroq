@@ -64,16 +64,19 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <div className="p-5 rounded-3xl space-y-5 flex flex-col items-center">
+    <div className="flex flex-col items-center justify-center min-h-screen overflow-y-scroll">
+      <div className="md:p-5 p-2 space-y-5 flex flex-col w-full items-center">
         <div className="flex flex-col items-center gap-2">
           <h1 className="bg-linear-to-r from-white to-accent bg-clip-text text-transparent text-5xl logo-font">
             keystroq
           </h1>
           <h1 className="text-xl text-center mb-5">Create an account</h1>
         </div>
-        <Form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex items-center gap-5">
+        <Form
+          className="flex flex-col gap-4 md:96 w-full"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className="flex md:flex-row flex-col md:items-center gap-5 w-full">
             <TextField isRequired name="name" type="name">
               <Label>First Name</Label>
               <Input
@@ -170,7 +173,7 @@ const SignUpPage = () => {
 
         <div className="text-center text-sm text-muted-foreground">
           Already have an account?{" "}
-          <a href="/login" className="underline">
+          <a href="/login" className="underline font-semibold">
             Login
           </a>
         </div>
