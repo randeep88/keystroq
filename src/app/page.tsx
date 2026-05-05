@@ -49,9 +49,10 @@ const HomePage = () => {
   return (
     <div className="h-screen flex flex-col">
       <Navbar />
-      <div className="flex-1 flex flex-col gap-5 items-center justify-center">
+      <div className="flex-1 flex flex-col gap-5 items-center justify-center py-10">
         <div className="text-center space-y-4">
           <motion.div
+            className="md:block hidden"
             variants={fadeUp}
             initial="hidden"
             animate="visible"
@@ -59,13 +60,22 @@ const HomePage = () => {
           >
             <Chip size="lg">Real-time 1v1 Typing Duels</Chip>
           </motion.div>
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="md:hidden block"
+            custom={0}
+          >
+            <Chip size="sm">Real-time 1v1 Typing Duels</Chip>
+          </motion.div>
 
           <motion.h1
             variants={fadeUp}
             initial="hidden"
             animate="visible"
             custom={1}
-            className="xl:text-7xl lg:text-6xl font-semibold"
+            className="xl:text-7xl lg:text-7xl md:text-6xl text-5xl font-semibold"
           >
             type fast, win wars.
           </motion.h1>
@@ -75,6 +85,7 @@ const HomePage = () => {
             initial="hidden"
             animate="visible"
             custom={2}
+            className="text-sm md:text-base"
           >
             Challenge anyone to a live typing duel. Share a link, race to the
             finish, prove who's faster.
@@ -91,11 +102,6 @@ const HomePage = () => {
           <Button
             size="lg"
             onClick={() => {
-              // if (!isSignedIn) {
-              //   setIsLoginOpen(true);
-              //   return;
-              // }
-
               router.push("/start-war");
             }}
           >
@@ -106,11 +112,6 @@ const HomePage = () => {
             variant="tertiary"
             size="lg"
             onClick={() => {
-              // if (!isSignedIn) {
-              //   setIsLoginOpen(true);
-              //   return;
-              // }
-
               router.push("/start-war");
             }}
           >
@@ -125,11 +126,13 @@ const HomePage = () => {
           initial="hidden"
           animate="visible"
           custom={4}
-          className="grid grid-cols-3 items-center gap-20"
+          className="md:grid hidden grid-cols-3 items-center gap-20"
         >
           <div className="text-center">
-            <h1 className="text-4xl font-bold">{homeStats?.totalWars || 0}</h1>
-            <p className="text-muted-foreground">wars fought</p>
+            <h1 className="md:text-4xl text-3xl font-bold">
+              {homeStats?.totalWars || 0}
+            </h1>
+            <p className="text-muted-foreground text-sm">wars fought</p>
           </div>
           <div className="text-center">
             <h1 className="text-4xl font-bold">
@@ -144,13 +147,41 @@ const HomePage = () => {
             <p className="text-muted-foreground">avg top speed</p>
           </div>
         </motion.div>
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={4}
+          className="md:hidden flex flex-col items-center gap-5 w-full px-10"
+        >
+          <div className="text-center">
+            <h1 className="text-4xl font-bold">
+              {homeStats?.avgTopWpm || 0} WPM
+            </h1>
+            <p className="text-muted-foreground">avg top speed</p>
+          </div>
+          <div className="flex items-center gap-10 justify-between w-full">
+            <div className="text-center">
+              <h1 className="md:text-4xl text-3xl font-bold">
+                {homeStats?.totalWars || 0}
+              </h1>
+              <p className="text-muted-foreground text-sm">wars fought</p>
+            </div>
+            <div className="text-center">
+              <h1 className="text-4xl font-bold">
+                {homeStats?.totalPlayers || 0}
+              </h1>
+              <p className="text-muted-foreground">players</p>
+            </div>
+          </div>
+        </motion.div>
 
         <motion.div
           variants={fadeUp}
           initial="hidden"
           animate="visible"
           custom={5}
-          className="grid grid-cols-2 gap-10 max-w-4xl mx-auto mt-5"
+          className="grid grid-cols-2 md:gap-10 gap-5 max-w-4xl mx-auto mt-5"
         >
           <Card>
             <Card.Header>

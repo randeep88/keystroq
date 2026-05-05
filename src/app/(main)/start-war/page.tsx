@@ -119,14 +119,14 @@ const StartWarPage = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col gap-10 pt-10 pb-10 items-start justify-start max-w-4xl mx-auto w-full">
+    <div className="flex-1 flex flex-col md:gap-10 gap-5 pt-10 pb-10 items-start justify-start xl:max-w-4xl mx-auto w-full">
       <div className="flex flex-col gap-2 w-full">
         <motion.h1
           variants={fadeUp}
           initial="hidden"
           animate="visible"
           custom={0}
-          className="text-4xl font-semibold"
+          className="md:text-4xl text-3xl font-semibold"
         >
           Start a War
         </motion.h1>
@@ -199,7 +199,6 @@ const StartWarPage = () => {
 
       {/* for Host */}
 
-      {/* <div className="w-full"> */}
       {isHost && roomNotification?.users?.length > 0 && isGeneratedArenaId && (
         <motion.div
           className="w-full"
@@ -218,7 +217,7 @@ const StartWarPage = () => {
                     <Avatar.Fallback>{u?.fullName[0]}</Avatar.Fallback>
                   </Avatar>
 
-                  <p>
+                  <p className="line-clamp-1 text-ellipsis w-full">
                     {u?.username}{" "}
                     {u?.id === user?.id && (
                       <span className="text-muted">(You)</span>
@@ -235,15 +234,18 @@ const StartWarPage = () => {
             {roomNotification?.users?.length === 1 && (
               <div className="flex items-center justify-between mt-5">
                 <div className="flex items-center gap-3">
-                  <Skeleton
+                  <Skeleton 
                     animationType="shimmer"
                     className="size-10 rounded-full"
                   />
 
                   <div className="flex items-center gap-2">
                     <Spinner size="sm" color="current" />
-                    <p className="shimmer-text">
+                    <p className="shimmer-text md:block hidden">
                       Waiting for the opponent to join...
+                    </p>
+                    <p className="shimmer-text md:hidden">
+                      Waiting for the opponent...
                     </p>
                   </div>
                 </div>
@@ -274,7 +276,7 @@ const StartWarPage = () => {
                       <Avatar.Fallback>{u?.fullName[0]}</Avatar.Fallback>
                     </Avatar>
 
-                    <p>
+                    <p className="line-clamp-1 text-ellipsis w-full">
                       {u?.username}{" "}
                       {u?.id === user?.id && (
                         <span className="text-muted">(You)</span>

@@ -9,7 +9,6 @@ import { Show, useUser } from "@clerk/nextjs";
 const Navbar = () => {
   const { user } = useUser();
 
-
   const router = useRouter();
 
   return (
@@ -26,6 +25,7 @@ const Navbar = () => {
           <div className="flex items-center space-x-4">
             <Show when="signed-in">
               <Button
+                className="md:block hidden"
                 onClick={() => router.push("/")}
                 variant="ghost"
                 size="sm"
@@ -33,6 +33,7 @@ const Navbar = () => {
                 Home
               </Button>
               <Button
+                className="md:block hidden"
                 onClick={() => router.push("/leaderboard")}
                 variant="ghost"
                 size="sm"

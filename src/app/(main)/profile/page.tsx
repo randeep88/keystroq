@@ -47,7 +47,7 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col pt-10 gap-10 w-5xl mx-auto h-full items-start">
+    <div className="flex-1 flex flex-col pt-10 gap-10 xl:w-5xl w-full mx-auto h-full items-start">
       <motion.div
         variants={fadeUp}
         initial="hidden"
@@ -58,8 +58,10 @@ const ProfilePage = () => {
         <EditProfile user={clerkUser} />
         <div className="flex items-center justify-between w-full">
           <div>
-            <p className="font-semibold text-xl">{clerkUser?.username}</p>
-            <p className="text-muted mt-1">
+            <p className="font-semibold md:text-xl text-lg line-clamp-1 text-ellipsis">
+              {clerkUser?.username}
+            </p>
+            <p className="text-muted md:text-base text-xs md:mt-1">
               member since{" "}
               {clerkUser?.createdAt
                 ? format(clerkUser?.createdAt, "MMM yyyy")
@@ -80,7 +82,7 @@ const ProfilePage = () => {
           initial="hidden"
           animate="visible"
           custom={1}
-          className="grid grid-cols-4 gap-16 justify-between items-center w-full"
+          className="grid md:grid-cols-4 grid-cols-2 md:gap-16 gap-5 justify-between items-center w-full"
         >
           <Card>
             <Card.Header>
@@ -113,7 +115,7 @@ const ProfilePage = () => {
         initial="hidden"
         animate="visible"
         custom={2}
-        className="w-full"
+        className="w-full mb-20"
       >
         <p className="uppercase text-sm text-muted mb-2 font-semibold">
           your recent wars
@@ -123,7 +125,7 @@ const ProfilePage = () => {
             {myRecentWars?.map((war: any, index: number) => (
               <Card key={index}>
                 <Card.Header>
-                  <div className="flex items-center gap-5">
+                  <div className="flex items-center md:gap-5 gap-2">
                     {war?.players?.some(
                       (p: any) => p?.user?.id === user?.id && p?.isWinner,
                     ) ? (
@@ -137,8 +139,8 @@ const ProfilePage = () => {
                     )}
 
                     <div className="w-full flex items-center justify-between">
-                      <div className="flex items-center justify-between">
-                        <Card.Title className="text-lg text-accent">
+                      <div className="flex items-center justify-between w-full">
+                        <Card.Title className="text-accent">
                           <div className="flex items-center gap-2">
                             <span className="text-muted">vs</span>{" "}
                             <Avatar size="sm" className="size-6">
@@ -156,17 +158,19 @@ const ProfilePage = () => {
                                   ?.toUpperCase()}
                               </Avatar.Fallback>
                             </Avatar>
-                            {war?.players.some(
-                              (p: any) => p?.user?.id !== user?.id,
-                            )
-                              ? war?.players.find(
-                                  (p: any) => p?.user?.id !== user?.id,
-                                )?.user?.username
-                              : "Unknown"}
+                            <p className="line-clamp-1 text-ellipsis w-full md:text-lg">
+                              {war?.players.some(
+                                (p: any) => p?.user?.id !== user?.id,
+                              )
+                                ? war?.players.find(
+                                    (p: any) => p?.user?.id !== user?.id,
+                                  )?.user?.username
+                                : "Unknown"}
+                            </p>
                           </div>
                         </Card.Title>
                       </div>
-                      <div className="flex text-muted items-center gap-2">
+                      <div className="flex md:flex-row flex-col text-muted md:items-center justify-end items-end md:gap-2 text-sm w-full">
                         <p>
                           {
                             war?.players.find(
@@ -175,8 +179,8 @@ const ProfilePage = () => {
                           }{" "}
                           wpm
                         </p>
-                        &bull;
-                        <p>
+                        <span className="hidden md:inline">&bull;</span>
+                        <p className="text-end md:text-normal">
                           {war?.startedAt
                             ? formatDistanceToNow(
                                 new Date(Number(war.startedAt)),

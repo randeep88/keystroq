@@ -34,14 +34,14 @@ const LeaderboardPage = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col pt-10 gap-10 w-5xl mx-auto h-full items-start">
+    <div className="flex-1 flex flex-col pt-10 gap-10 xl:w-5xl w-full mx-auto h-full items-start">
       <motion.div
         variants={fadeUp}
         initial="hidden"
         animate="visible"
         custom={0}
       >
-        <p className="text-4xl font-bold">Leaderboard</p>
+        <p className="md:text-4xl text-3xl font-bold">Leaderboard</p>
         <p className="text-muted text-lg mt-1.5">
           Top players ranked by best WPM
         </p>

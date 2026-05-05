@@ -383,7 +383,7 @@ const TypingArea = ({
       />
 
       {/* render passage */}
-      <div className="text-2xl font-mono cursor-text relative">
+      <div className="lg:text-2xl text-xl font-mono cursor-text relative">
         {/* Single caret */}
         <span
           ref={caretRef}

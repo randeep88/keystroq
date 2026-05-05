@@ -49,7 +49,7 @@ const ResultPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
   }
 
   return (
-    <div className="flex-1 flex flex-col pt-10 gap-10 max-w-8xl mx-auto w-full h-full items-center">
+    <div className="flex-1 flex flex-col pt-10 md:gap-10 gap-5 xl:max-w-8xl mx-auto w-full h-full items-center">
       <motion.div
         variants={fadeUp}
         initial="hidden"
@@ -77,7 +77,7 @@ const ResultPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
         initial="hidden"
         animate="visible"
         custom={1}
-        className="grid grid-cols-2 gap-10 w-5xl mx-auto"
+        className="grid md:grid-cols-2 grid-cols-1 md:gap-10 gap-5 md:w-5xl w-full mx-auto"
       >
         {war?.players?.map((player: any) => (
           <Surface
@@ -99,7 +99,7 @@ const ResultPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
 
             <Separator variant="tertiary" className="my-3" />
 
-            <div className="flex justify-between mt-2">
+            <div className="md:flex justify-between mt-2 hidden">
               <p className="text-xl font-medium">
                 {player?.accuracy || 0}%{" "}
                 <span className="text-sm text-muted">accuracy</span>
@@ -116,6 +116,26 @@ const ResultPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
                 <span className="text-sm text-muted">taken</span>
               </p>
             </div>
+
+            <div className="flex justify-between mt-2 md:hidden">
+              <div className="flex flex-col items-start">
+                <p className="text-xl font-medium">{player?.accuracy || 0}% </p>
+                <span className="text-sm text-muted">accuracy</span>
+              </div>
+
+              <div className="flex flex-col items-center">
+                <p className="text-xl font-medium">{player?.error || 0} </p>
+                <span className="text-sm text-muted">errors</span>
+              </div>
+
+              <div className="flex flex-col items-end">
+                <p className="text-xl font-medium">
+                  {getTimeFromSeconds(player?.timeTaken).minutes}m{" "}
+                  {getTimeFromSeconds(player?.timeTaken).seconds}s{" "}
+                </p>
+                <span className="text-sm text-muted">taken</span>
+              </div>
+            </div>
           </Surface>
         ))}
       </motion.div>
@@ -125,7 +145,7 @@ const ResultPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
         initial="hidden"
         animate="visible"
         custom={2}
-        className="flex gap-4"
+        className="flex gap-4 mb-20 md:mb-0"
       >
         <Button
           onClick={() => router.push("/start-war")}

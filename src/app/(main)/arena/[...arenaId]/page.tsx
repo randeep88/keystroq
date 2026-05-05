@@ -132,11 +132,11 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
   const secs = (seconds % 60).toString().padStart(2, "0");
 
   return (
-    <div className="flex-1 flex flex-col gap-10 pt-10 max-w-8xl mx-auto w-full select-none">
-      <div className="grid grid-cols-3 xl:gap-10 w-full">
+    <div className="flex-1 flex flex-col md:gap-10 gap-5 pt-10 xl:max-w-8xl mx-auto w-full select-none">
+      <div className="grid lg:grid-cols-3 grid-cols-2 gap-5 lg:gap-0 xl:gap-10 w-full">
         {user && (
           <Surface
-            className={`p-5 rounded-3xl space-y-2  ${
+            className={`md:p-5 p-2 rounded-3xl space-y-2  ${
               winnerId
                 ? winnerId === user?.id
                   ? "bg-green-700"
@@ -146,13 +146,14 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
             variant="default"
           >
             <div className="flex items-center gap-2 justify-between">
-              <p className="text-lg font-semibold line-clamp-1 text-ellipsis">
+              <p className="md:text-lg text-base font-semibold line-clamp-1 text-ellipsis">
                 {user?.username}
               </p>
               <div className="flex items-center">
                 {warData?.arena?.host === user?.id && (
                   <Chip
-                    className="me-2"
+                    size="sm"
+                    className="me-2 hidden md:block"
                     variant="soft"
                     color={`${
                       winnerId
@@ -166,6 +167,7 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
                   </Chip>
                 )}
                 <Chip
+                  size="sm"
                   variant="soft"
                   color={`${
                     winnerId
@@ -190,10 +192,10 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
               </ProgressBar.Track>
             </ProgressBar>
 
-            <div className="flex justify-between mt-2">
+            <div className="flex items-center justify-between mt-2">
               <div>
                 <p
-                  className={`text-sm ${
+                  className={`md:text-sm text-xs ${
                     winnerId
                       ? winnerId === user?.id && "text-white"
                       : "text-muted"
@@ -201,13 +203,13 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
                 >
                   wpm
                 </p>
-                <p className="text-2xl font-medium">
+                <p className="md:text-2xl text-base font-medium">
                   {currentUserStats?.wpm || 0}
                 </p>
               </div>
               <div>
                 <p
-                  className={`text-sm ${
+                  className={`md:text-sm text-xs ${
                     winnerId
                       ? winnerId === user?.id && "text-white"
                       : "text-muted"
@@ -215,13 +217,13 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
                 >
                   accuracy
                 </p>
-                <p className="text-2xl font-medium">
+                <p className="md:text-2xl text-base font-medium">
                   {currentUserStats?.accuracy || 0}%
                 </p>
               </div>
               <div>
                 <p
-                  className={`text-sm ${
+                  className={`md:text-sm text-xs ${
                     winnerId
                       ? winnerId === user?.id && "text-white"
                       : "text-muted"
@@ -229,11 +231,11 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
                 >
                   errors
                 </p>
-                <p className="text-2xl font-medium">
+                <p className="md:text-2xl text-base font-medium">
                   {currentUserStats?.error || 0}
                 </p>
               </div>
-              <div>
+              <div className="hidden md:block">
                 <p
                   className={`text-sm ${
                     winnerId
@@ -251,7 +253,7 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
           </Surface>
         )}
 
-        <div className="flex items-center justify-center w-full">
+        <div className="lg:flex items-center justify-center w-full hidden">
           <Image
             src={require("../../../../../public/vs.png")}
             alt="arena background"
@@ -262,7 +264,7 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
 
         {opponent && (
           <Surface
-            className={`p-5 rounded-3xl space-y-2 ${
+            className={`md:p-5 p-2 rounded-3xl space-y-2 ${
               winnerId
                 ? winnerId !== user?.id
                   ? "bg-green-700"
@@ -272,13 +274,14 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
             variant="default"
           >
             <div className="flex items-center gap-2 justify-between">
-              <p className="text-lg font-semibold line-clamp-1 text-ellipsis">
+              <p className="md:text-lg text-base font-semibold line-clamp-1 text-ellipsis">
                 {opponent?.username}
               </p>
               <div className="flex items-center">
                 {warData?.arena?.host !== user?.id && (
                   <Chip
-                    className="me-2"
+                    size="sm"
+                    className="me-2 hidden md:block"
                     variant="soft"
                     color={`${
                       winnerId
@@ -292,6 +295,7 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
                   </Chip>
                 )}
                 <Chip
+                  size="sm"
                   variant="soft"
                   color={`${
                     winnerId
@@ -320,7 +324,7 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
             <div className="flex justify-between mt-2">
               <div>
                 <p
-                  className={`text-sm ${
+                  className={`md:text-sm text-xs ${
                     winnerId
                       ? winnerId === user?.id && "text-white"
                       : "text-muted"
@@ -328,13 +332,13 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
                 >
                   wpm
                 </p>
-                <p className="text-2xl font-medium">
+                <p className="md:text-2xl text-base font-medium">
                   {opponentStats?.wpm || 0}
                 </p>
               </div>
               <div>
                 <p
-                  className={`text-sm ${
+                  className={`md:text-sm text-xs ${
                     winnerId
                       ? winnerId === user?.id && "text-white"
                       : "text-muted"
@@ -342,13 +346,13 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
                 >
                   accuracy
                 </p>
-                <p className="text-2xl font-medium">
+                <p className="md:text-2xl text-base font-medium">
                   {opponentStats?.accuracy || 0}%
                 </p>
               </div>
               <div>
                 <p
-                  className={`text-sm ${
+                  className={`md:text-sm text-xs ${
                     winnerId
                       ? winnerId === user?.id && "text-white"
                       : "text-muted"
@@ -356,13 +360,13 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
                 >
                   errors
                 </p>
-                <p className="text-2xl font-medium">
+                <p className="md:text-2xl text-base font-medium">
                   {opponentStats?.error || 0}
                 </p>
               </div>
-              <div>
+              <div className="hidden md:block">
                 <p
-                  className={`text-sm ${
+                  className={`md:text-sm text-xs ${
                     winnerId
                       ? winnerId === user?.id && "text-white"
                       : "text-muted"
@@ -379,7 +383,68 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
         )}
       </div>
 
-      <div className="flex items-center gap-10">
+      {/* for mobiles and below */}
+      <div className="flex flex-col items-center gap-2 md:hidden">
+        <div className="flex items-center gap-10 justify-center w-full">
+          <Surface variant="transparent" className="px-2 py-1 rounded-3xl">
+            <p className="text-xl font-bold text-center tracking-wide">
+              {mins}:{secs}
+            </p>
+          </Surface>
+
+          <Chip size="sm" color="danger" variant="soft">
+            <div className="size-2 bg-danger rounded-full mr-1" />{" "}
+            <span>Live</span>
+          </Chip>
+        </div>
+
+        <div className="flex items-center gap-10 justify-between w-full">
+          <Tabs
+            isDisabled={!isHost || liveWarData?.typed?.length > 0}
+            variant="primary"
+            className="w-full max-w-md"
+            selectedKey={wordCount.toString()}
+          >
+            <Tabs.ListContainer>
+              <Tabs.List aria-label="Options">
+                {wordCountTabs.map((tab) => (
+                  <Tabs.Tab
+                    key={tab.value}
+                    id={tab.value.toString()}
+                    onClick={() => setWordCount(tab.value)}
+                  >
+                    {tab.label}
+                    <Tabs.Indicator />
+                  </Tabs.Tab>
+                ))}
+              </Tabs.List>
+            </Tabs.ListContainer>
+          </Tabs>
+          <Button
+            isIconOnly
+            isDisabled={!isHost || liveWarData?.typed?.length > 0}
+            size="sm"
+            onClick={() => {
+              setIsBackspaceDisabled(!isBackspaceDisabled);
+              setBackspace({
+                roomId: arenaId,
+                isBackspaceDisabled: !isBackspaceDisabled,
+              });
+              toast(
+                backspaceData?.isBackspaceDisabled
+                  ? "Backspace enabled"
+                  : "Backspace disabled",
+              );
+            }}
+            variant={`${backspaceData?.isBackspaceDisabled ? "danger-soft" : "secondary"}`}
+          >
+            <Delete />
+          </Button>
+        </div>
+      </div>
+
+      {/* for tabs and above */}
+      <div className="md:flex items-center gap-10 hidden">
         <div>
           <Tabs
             isDisabled={!isHost || liveWarData?.typed?.length > 0}
@@ -440,7 +505,7 @@ const ArenaPage = ({ params }: { params: Promise<{ arenaId: string }> }) => {
       {/* Typing Area */}
       <div className="flex-1">
         <TypingArea
-        timeTaken={seconds}
+          timeTaken={seconds}
           backspaceData={backspaceData}
           isHost={isHost}
           passageData={passageData}
